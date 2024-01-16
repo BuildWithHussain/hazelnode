@@ -1,34 +1,49 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-function App() {
-  const [count, setCount] = useState(0);
+import React, { useCallback } from "react";
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from "reactflow";
 
-  return (
-    <div className="App">
-      <div>
-        <div>
-          <a href="https://vitejs.dev" target="_blank">
-            <img src="/vite.svg" className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://reactjs.org" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React + Frappe</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </div>
-    </div>
-  );
+// import '../app/globals.css';
+import "./index.css";
+import "reactflow/dist/style.css";
+
+const initialNodes = [
+  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
+  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
+];
+const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+
+// export default function App() {
+//   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+//   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+//   const onConnect = useCallback(
+//     (params) => setEdges((eds) => addEdge(params, eds)),
+//     [setEdges],
+//   );
+
+//   return (
+//     <div style={{ width: '90vw', height: '90vh' }}>
+//       <ReactFlow
+//         nodes={nodes}
+//         edges={edges}
+//         onNodesChange={onNodesChange}
+//         onEdgesChange={onEdgesChange}
+//         onConnect={onConnect}
+//       >
+//         <Controls />
+//         <MiniMap />
+//         <Background variant="dots" gap={12} size={1} />
+//       </ReactFlow>
+//     </div>
+//   );
+// }
+
+export default function App() {
+  return <h1 className="text-red-500 font-bold">Hello Hazelnode!</h1>;
 }
-
-export default App;
