@@ -22,6 +22,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { Button } from "./components/ui/button.tsx";
 
 const queryClient = new QueryClient();
 
@@ -102,10 +103,23 @@ const aboutRoute = new Route({
       <>
         <Avatar className="w-24 h-24">
           <AvatarImage src={data.user_image} alt={data.full_name} />
+          {/* TODO */}
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
         <p>{data.full_name}</p>
+
+        <Button
+          onClick={async () => {
+            const response = await fetch("/api/method/logout");
+            if (!response.ok) {
+              throw new Error("Error occurred while logging out");
+            }
+            window.location.href = "/login";
+          }}
+        >
+          Log Out
+        </Button>
 
         {isFetching && <p>Refreshing data...</p>}
       </>
