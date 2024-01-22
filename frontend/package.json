@@ -11,6 +11,7 @@
     "copy-html-entry": "cp ../hazelnode/public/frontend/index.html ../hazelnode/www/frontend.html"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.0-alpha.4",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-icons": "^1.3.0",
