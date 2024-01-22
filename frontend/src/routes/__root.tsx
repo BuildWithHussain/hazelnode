@@ -1,10 +1,13 @@
 import '@/index.css';
 
 import { Link, Outlet, rootRouteWithContext } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { getSessionUserId } from '@/data/session';
 import { QueryClient } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
+
+// Dev Tools (does not get bundled in production)
+import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export const Route = rootRouteWithContext<{ queryClient: QueryClient }>()({
   beforeLoad: async ({ location }) => {
@@ -25,7 +28,8 @@ export const Route = rootRouteWithContext<{ queryClient: QueryClient }>()({
       <hr />
       <Outlet />
       <Toaster />
-      <TanStackRouterDevtools />
+      <TanStackRouterDevtools position="bottom-right" />
+      <ReactQueryDevtools buttonPosition="top-right" />
     </>
   ),
 });
