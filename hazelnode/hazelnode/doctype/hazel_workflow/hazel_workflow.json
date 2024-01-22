@@ -6,7 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "enabled",
-  "title"
+  "title",
+  "section_break_jlvd",
+  "nodes"
  ],
  "fields": [
   {
@@ -21,11 +23,26 @@
    "in_list_view": 1,
    "label": "Title",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_jlvd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "nodes",
+   "fieldtype": "Table",
+   "label": "Nodes",
+   "options": "Hazel Node"
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-01-22 19:17:40.791444",
+ "links": [
+  {
+   "link_doctype": "Hazel Workflow Execution",
+   "link_fieldname": "workflow"
+  }
+ ],
+ "modified": "2024-01-22 19:39:56.492304",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow",
