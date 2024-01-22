@@ -8,6 +8,8 @@ import React from "react";
 //   addEdge,
 // } from "reactflow";
 
+import { toast } from "sonner";
+
 import {
   Dialog,
   DialogActions,
@@ -60,23 +62,28 @@ export default function App() {
 
   return (
     <>
-      <Button color="lime" type="button" onClick={() => setIsOpen(true)}>
-        Show Dialog
-      </Button>
+      <div className="flex gap-4">
+        <Button color="white" onClick={() => toast("Hello world!")}>
+          Show toast
+        </Button>
+        <Button color="lime" type="button" onClick={() => setIsOpen(true)}>
+          Show Dialog
+        </Button>
+      </div>
       <Dialog open={isOpen} onClose={setIsOpen}>
         <DialogTitle>Refund payment</DialogTitle>
         <DialogDescription>
           The refund will be reflected in the customer’s bank account 2 to 3
           business days after processing.
         </DialogDescription>
-        <DialogBody>
-          
-        </DialogBody>
+        <DialogBody></DialogBody>
         <DialogActions>
           <Button plain onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button color="lime" onClick={() => setIsOpen(false)}>Refund</Button>
+          <Button color="lime" onClick={() => setIsOpen(false)}>
+            Refund
+          </Button>
         </DialogActions>
       </Dialog>
 
