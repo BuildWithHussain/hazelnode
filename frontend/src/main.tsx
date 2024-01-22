@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 import { RouterProvider, Router } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { getSessionUserId } from '@/data/session';
 const queryClient = new QueryClient();
 
 const router = new Router({
@@ -13,6 +13,7 @@ const router = new Router({
   defaultPreloadStaleTime: 0,
   context: {
     queryClient,
+    sessionUser: getSessionUserId(),
   },
 });
 
