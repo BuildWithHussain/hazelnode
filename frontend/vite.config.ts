@@ -1,8 +1,8 @@
-import path from "path";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import proxyOptions from "./proxyOptions";
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
+import path from 'path';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import proxyOptions from './proxyOptions';
+import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,12 +13,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
-    outDir: "../hazelnode/public/frontend",
+    outDir: '../hazelnode/public/frontend',
     emptyOutDir: true,
-    target: "es2015",
+    target: 'es2015',
   },
 });

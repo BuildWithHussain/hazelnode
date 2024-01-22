@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 // import ReactFlow, {
 //   MiniMap,
 //   Controls,
@@ -8,7 +8,7 @@ import React from "react";
 //   addEdge,
 // } from "reactflow";
 
-import { toast } from "sonner";
+import { toast } from 'sonner';
 
 import {
   Dialog,
@@ -16,13 +16,13 @@ import {
   DialogBody,
   DialogDescription,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
 // import '../app/globals.css';
 // import "reactflow/dist/style.css";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 // import { Text } from "./components/ui/text";
 
 // const initialNodes = [
@@ -66,11 +66,11 @@ export default function App() {
         <Button
           color="white"
           onClick={() =>
-            toast("Workflow run successful", {
-              description: "Sunday, December 03, 2023 at 9:00 AM",
+            toast('Workflow run successful', {
+              description: 'Sunday, December 03, 2023 at 9:00 AM',
               action: {
-                label: "Details",
-                onClick: () => console.log("Undo"),
+                label: 'Details',
+                onClick: () => console.log('Undo'),
               },
             })
           }
