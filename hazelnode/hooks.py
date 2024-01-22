@@ -1,9 +1,9 @@
-app_name = "hazelnode"
-app_title = "Hazelnode"
-app_publisher = "Build With Hussain"
-app_description = "Workflow Automation for the Frappeverse"
-app_email = "buildwithhussain@gmail.com"
-app_license = "agpl-3.0"
+app_name = 'hazelnode'
+app_title = 'Hazelnode'
+app_publisher = 'Build With Hussain'
+app_description = 'Workflow Automation for the Frappeverse'
+app_email = 'buildwithhussain@gmail.com'
+app_license = 'agpl-3.0'
 # required_apps = []
 
 # Includes in <head>
@@ -228,4 +228,9 @@ app_license = "agpl-3.0"
 # }
 
 
-website_route_rules = [{'from_route': '/hazelnode/<path:app_path>', 'to_route': 'hazelnode'},]
+website_route_rules = [
+	{
+		'from_route': '/hazelnode/<path:app_path>',
+		'to_route': 'hazelnode',
+	},
+]
