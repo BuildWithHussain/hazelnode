@@ -23,6 +23,7 @@ import "./index.css";
 // import "reactflow/dist/style.css";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 // import { Text } from "./components/ui/text";
 
 // const initialNodes = [
@@ -62,7 +63,7 @@ export default function App() {
 
   return (
     <>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <Button
           color="white"
           onClick={() =>
@@ -80,6 +81,8 @@ export default function App() {
         <Button color="lime" type="button" onClick={() => setIsOpen(true)}>
           Show Dialog
         </Button>
+
+        <Checkbox color="lime" />
       </div>
       <Dialog open={isOpen} onClose={setIsOpen}>
         <DialogTitle>Refund payment</DialogTitle>
