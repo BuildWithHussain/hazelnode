@@ -24,7 +24,7 @@ import {
 import "./index.css";
 import "reactflow/dist/style.css";
 import { Button } from "@/components/ui/button";
-
+import { Badge } from "./components/ui/badge";
 
 // const initialNodes = [
 //   { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
@@ -81,6 +81,12 @@ export default function App() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <div className="flex gap-3">
+        <Badge color="lime">documentation</Badge>
+        <Badge color="purple">help wanted</Badge>
+        <Badge color="rose">bug</Badge>
+      </div>
     </>
   );
 }
