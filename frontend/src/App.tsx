@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 
 // import '../app/globals.css';
-import "./index.css";
 // import "reactflow/dist/style.css";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
