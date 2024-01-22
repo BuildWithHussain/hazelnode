@@ -23,7 +23,7 @@ import "./index.css";
 // import "reactflow/dist/style.css";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Text } from "./components/ui/text";
+// import { Text } from "./components/ui/text";
 
 // const initialNodes = [
 //   { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
@@ -63,7 +63,18 @@ export default function App() {
   return (
     <>
       <div className="flex gap-4">
-        <Button color="white" onClick={() => toast("Hello world!")}>
+        <Button
+          color="white"
+          onClick={() =>
+            toast("Workflow run successful", {
+              description: "Sunday, December 03, 2023 at 9:00 AM",
+              action: {
+                label: "Details",
+                onClick: () => console.log("Undo"),
+              },
+            })
+          }
+        >
           Show toast
         </Button>
         <Button color="lime" type="button" onClick={() => setIsOpen(true)}>
