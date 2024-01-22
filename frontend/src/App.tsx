@@ -63,7 +63,7 @@ export default function App() {
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button className="m-4" variant="outline">
+          <Button className="m-4" color="lime">
             Show Dialog
           </Button>
         </AlertDialogTrigger>
