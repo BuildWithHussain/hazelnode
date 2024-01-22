@@ -15,6 +15,7 @@ const router = new Router({
     queryClient,
     sessionUser: getSessionUserId(),
   },
+  defaultErrorComponent: () => <p>Something went wrong (from default error component)...</p>,
 });
 
 declare module '@tanstack/react-router' {

@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useUserInfo } from './queries/user';
 // import { Text } from "./components/ui/text";
 
 // const initialNodes = [
@@ -59,6 +60,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 export default function App() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const userQuery = useUserInfo();
 
   return (
     <>
@@ -104,6 +106,10 @@ export default function App() {
         <Badge color="lime">documentation</Badge>
         <Badge color="purple">help wanted</Badge>
         <Badge color="rose">bug</Badge>
+      </div>
+
+      <div>
+        <pre>{JSON.stringify(userQuery.data)}</pre>
       </div>
     </>
   );
