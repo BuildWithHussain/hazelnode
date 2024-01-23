@@ -7,7 +7,7 @@ type FilterObject<DT> = Record<
 >; // TODO: can be more granular later
 
 export interface DocTypeQueryParams<DT> {
-  fields?: string[] | '*';
+  fields?: Array<keyof DT> | '*';
   filters?: FilterObject<DT>;
   orFilters?: FilterObject<DT>;
   limit?: number;
@@ -23,7 +23,10 @@ export function useDocType<DT>(doctype: string) {
     queryOptions({
       queryKey: [doctype, 'list', params],
       queryFn: () => {
-        return makeRequest('document', `${doctype}`);
+        return makeRequest({
+          type: 'document',
+          path: doctype,
+        });
       },
     });
 
@@ -31,7 +34,10 @@ export function useDocType<DT>(doctype: string) {
     queryOptions({
       queryKey: [doctype, 'doc', name],
       queryFn: (): Promise<DT> => {
-        return makeRequest('document', `${doctype}/${document}`);
+        return makeRequest({
+          type: 'document',
+          path: `${doctype}/${document}`,
+        });
       },
     });
 

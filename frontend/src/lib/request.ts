@@ -1,17 +1,23 @@
 type APIType = 'method' | 'document' | 'doctype';
 
-export async function makeRequest(type: APIType, path: string) {
-  const url = `/api/v2/${type}/${path}`;
+interface APIRequestOptions {
+  type: APIType;
+  path: string;
+}
+
+export async function makeRequest(options: APIRequestOptions) {
+  const url = `/api/v2/${options.type}/${options.path}`;
 
   const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Error occurred while fetching user info');
-  }
-
   const data = await response.json();
 
-  if (data.message) {
-    return data.message;
+  if (!response.ok) {
+    console.error('Errors from Frappe API', data.errors);
+    throw new Error('Error occurred while fetching data...');
+  }
+
+  if (data.data) {
+    return data.data;
   }
 
   return data;
