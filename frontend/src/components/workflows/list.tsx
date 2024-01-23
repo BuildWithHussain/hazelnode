@@ -8,8 +8,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const WorkflowList = () => {
   const { useList } = useDocType<HazelWorkflow>('Hazel Workflow');
@@ -19,7 +20,12 @@ export const WorkflowList = () => {
   });
 
   if (workflowsList.isLoading) {
-    return <p>Loading workflows list...</p>;
+    return (
+      <>
+        <Skeleton className="w-[30%] h-8" />
+        <Skeleton className="w-[50%] h-8 mt-2" />
+      </>
+    );
   }
 
   if (workflowsList.isError) {
