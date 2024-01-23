@@ -1,52 +1,47 @@
 {
- "actions": [],
- "creation": "2024-01-22 19:22:49.868220",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "position_x",
-  "position_y",
-  "column_break_vkxd",
-  "type"
- ],
- "fields": [
-  {
-   "fieldname": "type",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Type",
-   "options": "Hazel Node Type",
-   "reqd": 1
-  },
-  {
-   "fieldname": "position_x",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Position X",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_vkxd",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "position_y",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Position Y",
-   "reqd": 1
-  }
- ],
- "index_web_pages_for_search": 1,
- "istable": 1,
- "links": [],
- "modified": "2024-01-22 19:31:02.817759",
- "modified_by": "Administrator",
- "module": "Hazelnode",
- "name": "Hazel Node",
- "owner": "Administrator",
- "permissions": [],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+  "actions": [],
+  "creation": "2024-01-22 19:22:49.868220",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["position_x", "position_y", "column_break_vkxd", "type"],
+  "fields": [
+    {
+      "fieldname": "type",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Type",
+      "options": "Hazel Node Type",
+      "reqd": 1
+    },
+    {
+      "fieldname": "position_x",
+      "fieldtype": "Float",
+      "in_list_view": 1,
+      "label": "Position X",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_vkxd",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "position_y",
+      "fieldtype": "Float",
+      "in_list_view": 1,
+      "label": "Position Y",
+      "reqd": 1
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "istable": 1,
+  "links": [],
+  "modified": "2024-01-22 19:31:02.817759",
+  "modified_by": "Administrator",
+  "module": "Hazelnode",
+  "name": "Hazel Node",
+  "owner": "Administrator",
+  "permissions": [],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": []
 }

@@ -1,5 +1,9 @@
-export async function makeRequest(api: string) {
-  const response = await fetch(`/api/method/${api}`);
+type APIType = 'method' | 'document' | 'doctype';
+
+export async function makeRequest(type: APIType, path: string) {
+  const url = `/api/v2/${type}/${path}`;
+
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error('Error occurred while fetching user info');
   }
