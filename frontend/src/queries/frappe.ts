@@ -23,9 +23,7 @@ export function useDocType<DT>(doctype: string) {
     queryOptions({
       queryKey: [doctype, 'list', params],
       queryFn: () => {
-        return makeRequest('document', `${doctype}`, {
-          params,
-        });
+        return makeRequest('document', `${doctype}`);
       },
     });
 
