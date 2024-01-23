@@ -3,10 +3,20 @@ type APIType = 'method' | 'document' | 'doctype';
 interface APIRequestOptions {
   type: APIType;
   path: string;
+  params?: object;
 }
 
 export async function makeRequest(options: APIRequestOptions) {
-  const url = `/api/v2/${options.type}/${options.path}`;
+  if (!options.type || !options.path) {
+    throw new Error('Invalid request options');
+  }
+
+  let url = `/api/v2/${options.type}/${options.path}`;
+
+  if (options.params) {
+    const params = new URLSearchParams(options.params);
+    url += '?' + params.toString();
+  }
 
   const response = await fetch(url);
   const data = await response.json();

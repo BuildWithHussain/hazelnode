@@ -27,7 +27,7 @@ export const Route = rootRouteWithContext<{
     <>
       <div className="p-2 flex gap-2">
         <Link to="/" className="[&.active]:font-bold">
-          Home
+          Dashboard
         </Link>
       </div>
       <hr />

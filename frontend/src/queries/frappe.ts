@@ -26,8 +26,10 @@ export function useDocType<DT>(doctype: string) {
         return makeRequest({
           type: 'document',
           path: doctype,
+          params: { ...params, fields: JSON.stringify(params.fields) },
         });
       },
+      enabled: !!params,
     });
 
   const getDocQueryOptions = (name: string) =>
@@ -36,9 +38,10 @@ export function useDocType<DT>(doctype: string) {
       queryFn: (): Promise<DT> => {
         return makeRequest({
           type: 'document',
-          path: `${doctype}/${document}`,
+          path: `${doctype}/${name}`,
         });
       },
+      enabled: !!name,
     });
 
   return {
