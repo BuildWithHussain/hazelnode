@@ -48,14 +48,14 @@ export const WorkflowList = () => {
             <TableHead>
               <TableRow>
                 <TableHeader>Name</TableHeader>
-                <TableHeader>Enabled?</TableHeader>
+                <TableHeader align="right">Enabled?</TableHeader>
               </TableRow>
             </TableHead>
             <TableBody>
               {workflows?.map((wf) => (
                 <TableRow key={wf.name} href={'#'}>
                   <TableCell className="font-medium">{wf.title}</TableCell>
-                  <TableCell>
+                  <TableCell align="right">
                     <Switch color="lime" checked={!!wf.enabled} />
                   </TableCell>
                 </TableRow>

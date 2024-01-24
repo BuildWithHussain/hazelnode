@@ -26,13 +26,13 @@ export const Route = rootRouteWithContext<{
   component: () => (
     <>
       <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Dashboard
+        <Link to="/" className="[&.active]:font-bold text-gray-800">
+          Hazel✨Node
         </Link>
       </div>
       <hr />
 
-      <div className="p-2">
+      <div className="py-2">
         <Outlet />
       </div>
       <Toaster />
