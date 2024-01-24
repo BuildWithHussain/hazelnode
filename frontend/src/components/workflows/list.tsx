@@ -52,7 +52,7 @@ export const WorkflowList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {workflows.map((wf) => (
+              {workflows?.map((wf) => (
                 <TableRow key={wf.name} href={'#'}>
                   <TableCell className="font-medium">{wf.title}</TableCell>
                   <TableCell>
