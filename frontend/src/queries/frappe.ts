@@ -6,6 +6,12 @@ type FilterObject<DT> = Record<
   number | string | Array<string | number>
 >; // TODO: can be more granular later
 
+type DocTypeName =
+  | 'Hazel Node'
+  | 'Hazel Workflow'
+  | 'Hazel Node Type'
+  | 'Hazel Workflow Execution Log';
+
 export interface DocTypeQueryParams<DT> {
   fields?: ReadonlyArray<keyof DT> | '*';
   filters?: FilterObject<DT>;
@@ -18,7 +24,7 @@ export interface DocTypeQueryParams<DT> {
   asDict?: boolean;
 }
 
-export function useDocType<DT>(doctype: string) {
+export function useDocType<DT>(doctype: DocTypeName) {
   return {
     useList: (params: DocTypeQueryParams<DT> = {}) =>
       useQuery(getListQueryOptions<DT>(doctype, params)),
@@ -46,7 +52,7 @@ function getListQueryOptions<DT>(
   });
 }
 
-function getDocQueryOptions<DT>(doctype: string, name: string) {
+function getDocQueryOptions<DT>(doctype: DocTypeName, name: string) {
   return queryOptions({
     queryKey: [doctype, 'doc', name],
     queryFn: (): Promise<DT> => {
@@ -59,7 +65,7 @@ function getDocQueryOptions<DT>(doctype: string, name: string) {
   });
 }
 
-export function useDocument<DT>(doctype: string, name: string) {
+export function useDocument<DT>(doctype: DocTypeName, name: string) {
   return useQuery(getDocQueryOptions<DT>(doctype, name));
 }
 
