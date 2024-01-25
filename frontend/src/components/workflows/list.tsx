@@ -1,4 +1,4 @@
-import { useDocType } from '@/queries/frappe';
+import { useDocumentList } from '@/queries/frappe';
 import {
   Table,
   TableBody,
@@ -13,9 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const WorkflowList = () => {
-  const { useList } = useDocType<HazelWorkflow>('Hazel Workflow');
-
-  const workflowsList = useList({
+  const workflowsList = useDocumentList<HazelWorkflow>('Hazel Workflow', {
     fields: ['name', 'title', 'enabled'],
   });
 

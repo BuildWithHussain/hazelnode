@@ -58,3 +58,14 @@ function getDocQueryOptions<DT>(doctype: string, name: string) {
     enabled: !!name,
   });
 }
+
+export function useDocument<DT>(doctype: string, name: string) {
+  return useQuery(getDocQueryOptions<DT>(doctype, name));
+}
+
+export function useDocumentList<DT>(
+  doctype: string,
+  params: DocTypeQueryParams<DT> = {},
+) {
+  return useQuery(getListQueryOptions<DT>(doctype, params));
+}
