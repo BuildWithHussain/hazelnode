@@ -7,7 +7,7 @@ type FilterObject<DT> = Record<
 >; // TODO: can be more granular later
 
 export interface DocTypeQueryParams<DT> {
-  fields?: ReadonlyArray<keyof DT> | "*";
+  fields?: ReadonlyArray<keyof DT> | '*';
   filters?: FilterObject<DT>;
   orFilters?: FilterObject<DT>;
   limit?: number;
@@ -19,38 +19,42 @@ export interface DocTypeQueryParams<DT> {
 }
 
 export function useDocType<DT>(doctype: string) {
-  const getListQueryOptions = (params: DocTypeQueryParams<DT>) => {
-    if (!params.fields) {
-      params.fields = ['name' as keyof DT];
-    }
-    return queryOptions({
-      queryKey: [doctype, 'list', params],
-      queryFn: (): Promise<Array<DT>> => {
-        return makeRequest({
-          type: 'document',
-          path: doctype,
-          params: { ...params, fields: JSON.stringify(params.fields) },
-        });
-      },
-      enabled: !!params,
-    });
-  };
-
-  const getDocQueryOptions = (name: string) =>
-    queryOptions({
-      queryKey: [doctype, 'doc', name],
-      queryFn: (): Promise<DT> => {
-        return makeRequest({
-          type: 'document',
-          path: `${doctype}/${name}`,
-        });
-      },
-      enabled: !!name,
-    });
-
   return {
     useList: (params: DocTypeQueryParams<DT> = {}) =>
-      useQuery(getListQueryOptions(params)),
-    useDoc: (name: string) => useQuery(getDocQueryOptions(name)),
+      useQuery(getListQueryOptions<DT>(doctype, params)),
+    useDoc: (name: string) => useQuery(getDocQueryOptions<DT>(doctype, name)),
   };
+}
+
+function getListQueryOptions<DT>(
+  doctype: string,
+  params: DocTypeQueryParams<DT>,
+) {
+  if (!params.fields) {
+    params.fields = ['name' as keyof DT];
+  }
+  return queryOptions({
+    queryKey: [doctype, 'list', params],
+    queryFn: (): Promise<Array<DT>> => {
+      return makeRequest({
+        type: 'document',
+        path: doctype,
+        params: { ...params, fields: JSON.stringify(params.fields) },
+      });
+    },
+    enabled: !!params,
+  });
+}
+
+function getDocQueryOptions<DT>(doctype: string, name: string) {
+  return queryOptions({
+    queryKey: [doctype, 'doc', name],
+    queryFn: (): Promise<DT> => {
+      return makeRequest({
+        type: 'document',
+        path: `${doctype}/${name}`,
+      });
+    },
+    enabled: !!name,
+  });
 }
