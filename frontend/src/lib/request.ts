@@ -3,6 +3,7 @@ type APIType = 'method' | 'document' | 'doctype';
 interface APIRequestOptions {
   type: APIType;
   path: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   params?: object;
 }
 
@@ -11,14 +12,30 @@ export async function makeRequest(options: APIRequestOptions) {
     throw new Error('Invalid request options');
   }
 
-  let url = `/api/v2/${options.type}/${options.path}`;
-
-  if (options.params) {
-    const params = new URLSearchParams(options.params);
-    url += '?' + params.toString();
+  if (!options.method) {
+    options.method = 'GET';
   }
 
-  const response = await fetch(url);
+  let url = `/api/v2/${options.type}/${options.path}`;
+  let body;
+
+  if (options.params) {
+    if (options.method == 'GET') {
+      const params = new URLSearchParams(options.params);
+      url += '?' + params.toString();
+    } else {
+      body = JSON.stringify(options.params);
+    }
+  }
+
+  const response = await fetch(url, {
+    method: options.method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body,
+  });
+
   const data = await response.json();
 
   if (!response.ok) {

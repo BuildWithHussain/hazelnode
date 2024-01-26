@@ -1,5 +1,10 @@
 import { makeRequest } from '@/lib/request';
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import {
+  queryOptions,
+  useQuery,
+  useMutation,
+  useQueryClient
+} from '@tanstack/react-query';
 
 type FilterObject<DT> = Record<
   keyof DT,
@@ -29,6 +34,7 @@ export function useDocType<DT>(doctype: DocTypeName) {
     useList: (params: DocTypeQueryParams<DT> = {}) =>
       useQuery(getListQueryOptions<DT>(doctype, params)),
     useDoc: (name: string) => useQuery(getDocQueryOptions<DT>(doctype, name)),
+    useSetValueMutation: () => useSetValueMutation<DT>(doctype),
   };
 }
 
@@ -74,4 +80,42 @@ export function useDocumentList<DT>(
   params: DocTypeQueryParams<DT> = {},
 ) {
   return useQuery(getListQueryOptions<DT>(doctype, params));
+}
+
+type Optional<Type> = {
+  [Property in keyof Type]?: Type[Property];
+};
+
+interface SetValueData<DT> {
+  name: string;
+  values: Optional<DT>;
+}
+
+export function useSetValueMutation<DT>(doctype: DocTypeName) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: SetValueData<DT>) => {
+      return makeRequest({
+        type: 'method',
+        path: 'frappe.client.set_value',
+        method: 'POST',
+        params: {
+          doctype,
+          name: data.name,
+          fieldname: data.values,
+        },
+      });
+    },
+    onSuccess(_, variables: SetValueData<DT>) {
+      // invalidate the list and doc queries
+      queryClient.invalidateQueries({
+        queryKey: [doctype, 'list'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [doctype, 'doc', variables.name],
+      });
+    },
+  });
 }
