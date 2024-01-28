@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { useDocType } from '@/queries/frappe';
+import { DocTypeQueryParams, useDocType } from '@/queries/frappe';
 import {
   Table,
   TableBody,
@@ -12,23 +12,37 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export const WorkflowList = () => {
-  const { useList, useSetValueMutation, getListOptions } =
+  const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
+  const [workflowTitle, setWorkflowTitle] = useState('');
+
+  const { useList, useSetValueMutation, useCreateDocMutation, getListOptions } =
     useDocType<HazelWorkflow>('Hazel Workflow');
 
   const queryClient = useQueryClient();
 
-  const workflowsList = useList({
+  const listOptions: DocTypeQueryParams<HazelWorkflow> = {
     fields: ['title', 'name', 'enabled'],
-  });
+    order_by: 'creation desc',
+  };
 
-  const queryOptions = getListOptions({
-    fields: ['title', 'name', 'enabled'],
-  });
+  const workflowsList = useList(listOptions);
+  const queryOptions = getListOptions(listOptions);
 
   const workflowSetValueMutation = useSetValueMutation();
+
+  const createWorkflowMutation = useCreateDocMutation();
 
   function toggleEnabled(wf: HazelWorkflow) {
     const currentWorkflows = queryClient.getQueryData(queryOptions.queryKey);
@@ -69,6 +83,25 @@ export const WorkflowList = () => {
     );
   }
 
+  function handleCreateWorkflow() {
+    if (!workflowTitle) {
+      // TODO: Show error in form itself
+      toast.warning('Title is required!');
+    }
+    createWorkflowMutation.mutate(
+      {
+        title: workflowTitle,
+      },
+      {
+        onSuccess: () => {
+          setWorkflowTitle('');
+          toast.success('Workflow created successfully!');
+          setShowNewWorkflowDialog(false);
+        },
+      },
+    );
+  }
+
   if (workflowsList.isLoading) {
     return (
       <>
@@ -90,7 +123,9 @@ export const WorkflowList = () => {
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>Your Workflows</CardTitle>
-            <Button color="lime">New Workflow</Button>
+            <Button color="lime" onClick={() => setShowNewWorkflowDialog(true)}>
+              New Workflow
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -118,6 +153,32 @@ export const WorkflowList = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <Dialog open={showNewWorkflowDialog} onClose={setShowNewWorkflowDialog}>
+        <DialogTitle>Create new workflow</DialogTitle>
+
+        <DialogBody>
+          <div>
+            <Label htmlFor="title">Title</Label>
+            <Input
+              value={workflowTitle}
+              onChange={(v) => setWorkflowTitle(v.target.value)}
+              type="text"
+              id="title"
+              placeholder="Send an email on form submit"
+            />
+          </div>
+        </DialogBody>
+
+        <DialogActions>
+          <Button outline onClick={() => setShowNewWorkflowDialog(false)}>
+            Cancel
+          </Button>
+          <Button color="lime" onClick={handleCreateWorkflow}>
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
