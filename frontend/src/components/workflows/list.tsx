@@ -12,22 +12,15 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogActions,
-  DialogBody,
-  DialogTitle,
-} from '@/components/ui/dialog';
+
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import CreateWorkflowDialog from './create-dialog';
 
 export const WorkflowList = () => {
   const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
-  const [workflowTitle, setWorkflowTitle] = useState('');
 
-  const { useList, useSetValueMutation, useCreateDocMutation, getListOptions } =
+  const { useList, useSetValueMutation, getListOptions } =
     useDocType<HazelWorkflow>('Hazel Workflow');
 
   const queryClient = useQueryClient();
@@ -41,8 +34,6 @@ export const WorkflowList = () => {
   const queryOptions = getListOptions(listOptions);
 
   const workflowSetValueMutation = useSetValueMutation();
-
-  const createWorkflowMutation = useCreateDocMutation();
 
   function toggleEnabled(wf: HazelWorkflow) {
     const currentWorkflows = queryClient.getQueryData(queryOptions.queryKey);
@@ -78,25 +69,6 @@ export const WorkflowList = () => {
           queryClient.invalidateQueries({
             queryKey: queryOptions.queryKey,
           });
-        },
-      },
-    );
-  }
-
-  function handleCreateWorkflow() {
-    if (!workflowTitle) {
-      // TODO: Show error in form itself
-      toast.warning('Title is required!');
-    }
-    createWorkflowMutation.mutate(
-      {
-        title: workflowTitle,
-      },
-      {
-        onSuccess: () => {
-          setWorkflowTitle('');
-          toast.success('Workflow created successfully!');
-          setShowNewWorkflowDialog(false);
         },
       },
     );
@@ -161,31 +133,10 @@ export const WorkflowList = () => {
         </CardContent>
       </Card>
 
-      <Dialog open={showNewWorkflowDialog} onClose={setShowNewWorkflowDialog}>
-        <DialogTitle>Create new workflow</DialogTitle>
-
-        <DialogBody>
-          <div>
-            <Label htmlFor="title">Title</Label>
-            <Input
-              value={workflowTitle}
-              onChange={(v) => setWorkflowTitle(v.target.value)}
-              type="text"
-              id="title"
-              placeholder="Send an email on form submit"
-            />
-          </div>
-        </DialogBody>
-
-        <DialogActions>
-          <Button outline onClick={() => setShowNewWorkflowDialog(false)}>
-            Cancel
-          </Button>
-          <Button color="lime" onClick={handleCreateWorkflow}>
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CreateWorkflowDialog
+        open={showNewWorkflowDialog}
+        onClose={setShowNewWorkflowDialog}
+      />
     </>
   );
 };
