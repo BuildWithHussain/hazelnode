@@ -3,7 +3,7 @@ import {
   queryOptions,
   useQuery,
   useMutation,
-  useQueryClient
+  useQueryClient,
 } from '@tanstack/react-query';
 
 type FilterObject<DT> = Record<
@@ -33,6 +33,8 @@ export function useDocType<DT>(doctype: DocTypeName) {
   return {
     useList: (params: DocTypeQueryParams<DT> = {}) =>
       useQuery(getListQueryOptions<DT>(doctype, params)),
+    getListOptions: (params: DocTypeQueryParams<DT> = {}) =>
+      getListQueryOptions<DT>(doctype, params),
     useDoc: (name: string) => useQuery(getDocQueryOptions<DT>(doctype, name)),
     useSetValueMutation: () => useSetValueMutation<DT>(doctype),
   };
