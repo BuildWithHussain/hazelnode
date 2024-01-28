@@ -20,10 +20,10 @@ import CreateWorkflowDialog from './create-dialog';
 export const WorkflowList = () => {
   const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const { useList, useSetValueMutation, getListOptions } =
     useDocType<HazelWorkflow>('Hazel Workflow');
-
-  const queryClient = useQueryClient();
 
   const listOptions: DocTypeQueryParams<HazelWorkflow> = {
     fields: ['title', 'name', 'enabled'],
