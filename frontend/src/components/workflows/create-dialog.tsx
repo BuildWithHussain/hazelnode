@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { useCreateDocMutation } from '@/queries/frappe';
 import { Button } from '@/components/ui/button';
 import { type DialogProps as HeadlessDialogProps } from '@headlessui/react';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function CreateWorkflowDialog({
   open,
@@ -23,6 +24,8 @@ export default function CreateWorkflowDialog({
   onClose: (isOpen: boolean) => void;
 } & HeadlessDialogProps) {
   const [workflowTitle, setWorkflowTitle] = useState('');
+  const navigate = useNavigate();
+
   const createWorkflowMutation =
     useCreateDocMutation<HazelWorkflow>('Hazel Workflow');
 
@@ -36,10 +39,16 @@ export default function CreateWorkflowDialog({
         title: workflowTitle,
       },
       {
-        onSuccess: () => {
+        onSuccess: (doc) => {
           setWorkflowTitle('');
           toast.success('Workflow created successfully!');
           onClose(false);
+          navigate({
+            to: '/workflow/$id',
+            params: {
+              id: doc.name,
+            },
+          });
         },
       },
     );

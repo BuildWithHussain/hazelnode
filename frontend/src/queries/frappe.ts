@@ -127,7 +127,7 @@ export function useCreateDocMutation<DT>(doctype: DocTypeName) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (doc: Partial<DT>) => {
+    mutationFn: (doc: Partial<DT>): Promise<DT> => {
       return makeRequest({
         method: 'POST',
         type: 'document',
