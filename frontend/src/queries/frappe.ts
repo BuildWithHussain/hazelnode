@@ -4,6 +4,7 @@ import {
   useQuery,
   useMutation,
   useQueryClient,
+  useSuspenseQuery,
 } from '@tanstack/react-query';
 
 type FilterObject<DT> = Record<
@@ -35,13 +36,16 @@ export function useDocType<DT>(doctype: DocTypeName) {
       useQuery(getListQueryOptions<DT>(doctype, params)),
     getListOptions: (params: DocTypeQueryParams<DT> = {}) =>
       getListQueryOptions<DT>(doctype, params),
+    getDocOptions: (name: string) => getDocQueryOptions<DT>(doctype, name),
     useDoc: (name: string) => useQuery(getDocQueryOptions<DT>(doctype, name)),
     useSetValueMutation: () => useSetValueMutation<DT>(doctype),
     useCreateDocMutation: () => useCreateDocMutation<DT>(doctype),
+    useSuspenseDoc: (name: string) =>
+      useSuspenseQuery(getDocQueryOptions<DT>(doctype, name)),
   };
 }
 
-function getListQueryOptions<DT>(
+export function getListQueryOptions<DT>(
   doctype: string,
   params: DocTypeQueryParams<DT>,
 ) {
@@ -61,7 +65,7 @@ function getListQueryOptions<DT>(
   });
 }
 
-function getDocQueryOptions<DT>(doctype: DocTypeName, name: string) {
+export function getDocQueryOptions<DT>(doctype: DocTypeName, name: string) {
   return queryOptions({
     queryKey: [doctype, 'doc', name],
     queryFn: (): Promise<DT> => {
