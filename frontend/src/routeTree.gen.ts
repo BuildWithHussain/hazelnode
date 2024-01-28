@@ -5,6 +5,7 @@ import { FileRoute, lazyRouteComponent } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WorkflowIdImport } from './routes/workflow.$id'
 
 // Create Virtual Routes
 
@@ -22,6 +23,11 @@ const IndexComponentRoute = IndexComponentImport.update({
   ),
 })
 
+const WorkflowIdRoute = WorkflowIdImport.update({
+  path: '/workflow/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -30,9 +36,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexComponentImport
       parentRoute: typeof rootRoute
     }
+    '/workflow/$id': {
+      preLoaderRoute: typeof WorkflowIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexComponentRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexComponentRoute,
+  WorkflowIdRoute,
+])

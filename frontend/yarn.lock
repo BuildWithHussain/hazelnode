@@ -920,6 +920,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tanstack/history@1.12.16":
+  version "1.12.16"
+  resolved "https://registry.yarnpkg.com/@tanstack/history/-/history-1.12.16.tgz#b1c4d08373430d90067331294c3500cfa2c788e4"
+  integrity sha512-lhm4aRy+B3yK3TgfFnjVYaSqrWobr0sOxF3z+6ZNJQoKaJ+ga+se5J+woozN/RHIZorfa+H71fevF82MXUsoIA==
+
 "@tanstack/history@1.4.6":
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/@tanstack/history/-/history-1.4.6.tgz#b45964811d34984bf15c8ba5334e780f8fa64ac4"
@@ -949,7 +954,7 @@
   dependencies:
     "@tanstack/query-core" "5.17.15"
 
-"@tanstack/react-router@1.4.6", "@tanstack/react-router@^1.4.6":
+"@tanstack/react-router@1.4.6":
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/@tanstack/react-router/-/react-router-1.4.6.tgz#5fce01e9d422c2bd6d0825f5e513acf847e4eec2"
   integrity sha512-4pAQ7+gwhrfafqs3nHwCDlLLBXjL8phk/JAx6qunvRkGulBbwblDs0PQbzTzWvIJH4hS8x0zMIrUGr/LzlD8xQ==
@@ -958,6 +963,16 @@
     "@tanstack/history" "1.4.6"
     "@tanstack/react-store" "^0.2.1"
     "@tanstack/store" "^0.1.3"
+    tiny-invariant "^1.3.1"
+    tiny-warning "^1.0.3"
+
+"@tanstack/react-router@^1.4.6":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-router/-/react-router-1.14.0.tgz#de50e86160eb5eb0e2f0760f3ec468ea452577be"
+  integrity sha512-Dods/Ne9uxJSOgg3yfINIfjPs5cSxhkuw9EWj+sk/XI/CGZ+E2cwOJA8xmO1KoShXl04wpi6NRjsDuH6uohE+g==
+  dependencies:
+    "@tanstack/history" "1.12.16"
+    "@tanstack/react-store" "^0.2.1"
     tiny-invariant "^1.3.1"
     tiny-warning "^1.0.3"
 
