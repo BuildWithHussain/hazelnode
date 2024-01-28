@@ -77,8 +77,8 @@ export const WorkflowList = () => {
   if (workflowsList.isLoading) {
     return (
       <>
-        <Skeleton className="w-[30%] h-8" />
-        <Skeleton className="w-[50%] h-8 mt-2" />
+        <Skeleton className="h-8 w-[30%]" />
+        <Skeleton className="mt-2 h-8 w-[50%]" />
       </>
     );
   }
@@ -93,7 +93,7 @@ export const WorkflowList = () => {
     <>
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center align-baseline">
+          <div className="flex items-center justify-between align-baseline">
             <CardTitle>Your Workflows</CardTitle>
             <Button color="lime" onClick={() => setShowNewWorkflowDialog(true)}>
               New Workflow
