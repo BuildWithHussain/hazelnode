@@ -6,8 +6,6 @@ export const Link = React.forwardRef(function Link(
   props: { to: LinkProps['to'] } & Omit<LinkProps, 'to'>,
   ref: React.ForwardedRef<HTMLAnchorElement>,
 ) {
-  console.log(props);
-
   return (
     <HeadlessDataInteractive>
       <TanstackLink {...props} ref={ref} to={props.to} params={props.params} />
