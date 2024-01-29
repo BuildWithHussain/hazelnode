@@ -27,6 +27,7 @@ function WorkflowDetails() {
     const deleteConfirmed = await confirm({
       title: 'Delete Workflow',
       description: 'Are you sure?',
+      actionType: 'danger',
     });
 
     if (!deleteConfirmed) {

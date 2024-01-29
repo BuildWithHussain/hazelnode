@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 
 interface ConfirmOptions {
   isOpen?: boolean;
+  actionType?: 'danger' | 'warning' | 'primary';
   title?: string;
   description?: string;
 }
@@ -60,7 +61,16 @@ export function ConfirmDialogProvider({
           <Button outline onClick={() => fn.current && fn.current(false)}>
             Cancel
           </Button>
-          <Button color="rose" onClick={() => fn.current && fn.current(true)}>
+          <Button
+            color={
+              state.actionType == 'danger'
+                ? 'rose'
+                : state.actionType == 'warning'
+                  ? 'yellow'
+                  : 'lime'
+            }
+            onClick={() => fn.current && fn.current(true)}
+          >
             Confirm
           </Button>
         </DialogActions>
