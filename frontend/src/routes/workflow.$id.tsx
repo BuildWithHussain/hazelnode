@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { getDocQueryOptions, useDocType } from '@/queries/frappe';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/confirm';
 
 export const Route = createFileRoute('/workflow/$id')({
   component: WorkflowDetails,
@@ -15,14 +16,23 @@ export const Route = createFileRoute('/workflow/$id')({
 function WorkflowDetails() {
   const params = Route.useParams();
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
   const { useSuspenseDoc, useDeleteDocMutation } =
     useDocType<HazelWorkflow>('Hazel Workflow');
   const workflowDoc = useSuspenseDoc(params.id);
   const deleteWorkflowMutation = useDeleteDocMutation();
 
-  function handleDeleteWorkflow() {
-    // todo: ask for confirmation
+  async function handleDeleteWorkflow() {
+    const deleteConfirmed = await confirm({
+      title: 'Delete Workflow',
+      description: 'Are you sure?',
+    });
+
+    if (!deleteConfirmed) {
+      return;
+    }
+
     deleteWorkflowMutation.mutate(
       {
         name: params.id,
@@ -32,7 +42,7 @@ function WorkflowDetails() {
           navigate({
             to: '/',
           });
-          toast.success('Workflow deleted successfully!');
+          toast.success('Workflow deleted.');
         },
       },
     );
