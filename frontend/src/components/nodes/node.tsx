@@ -1,13 +1,13 @@
 // import { useCallback } from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, NodeProps, Position } from 'reactflow';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-export default function WorkflowNode({ data }: { data: HazelNode }) {
+export default function WorkflowNode({ data }: NodeProps<HazelNode>) {
   return (
     <>
       <Card>
-        <CardTitle className="p-3 flex justify-between items-center">
+        <CardTitle className="flex items-center justify-between p-3">
           <p>{data.type}</p>
           <Button outline>Edit</Button>
         </CardTitle>
