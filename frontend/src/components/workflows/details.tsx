@@ -23,6 +23,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
 } from 'reactflow';
+
 import { useCallback, useMemo } from 'react';
 
 import 'reactflow/dist/style.css';
@@ -123,7 +124,7 @@ export function WorkflowDetails() {
             onConnect={onConnect}
             nodeTypes={nodeTypes}
           >
-            <Controls />
+            <Controls position={'top-right'} />
             <MiniMap />
             <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
           </ReactFlow>
