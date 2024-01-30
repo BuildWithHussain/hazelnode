@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
 
-export default function WorkflowNode({ data }: NodeProps<HazelNode>) {
+export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
   return (
     <>
-      <Card>
+      <Card className={selected ? 'border-2 border-lime-400/80' : ''}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>{data.type}</CardTitle>
