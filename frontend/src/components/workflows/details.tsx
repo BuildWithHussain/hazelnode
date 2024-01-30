@@ -4,15 +4,6 @@ import { useConfirm } from '@/hooks/confirm';
 import { useDocType } from '@/queries/frappe';
 import { useNavigate } from '@tanstack/react-router';
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-
 import { Route as WorkflowDetailsRoute } from '@/routes/workflow.$id';
 import ReactFlow, {
   Background,
@@ -28,6 +19,7 @@ import { useCallback, useMemo } from 'react';
 
 import 'reactflow/dist/style.css';
 import WorkflowNode from '@/components/nodes/node';
+import { NodeDetailsSheetProvider } from '../nodes/details-sheet';
 
 export function WorkflowDetails() {
   const params = WorkflowDetailsRoute.useParams();
@@ -97,37 +89,24 @@ export function WorkflowDetails() {
           <Button color="rose" onClick={handleDeleteWorkflow}>
             Delete Workflow
           </Button>
-
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button>Open Side</Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Are you absolutely sure?</SheetTitle>
-                <SheetDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </SheetDescription>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
         </div>
 
         <div className="col-span-3">
-          <ReactFlow
-            className="h-full w-full"
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-          >
-            <Controls position={'top-right'} />
-            <MiniMap />
-            <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-          </ReactFlow>
+          <NodeDetailsSheetProvider>
+            <ReactFlow
+              className="h-full w-full"
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+            >
+              <Controls position={'top-right'} />
+              <MiniMap />
+              <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+            </ReactFlow>
+          </NodeDetailsSheetProvider>
         </div>
       </div>
     </>
