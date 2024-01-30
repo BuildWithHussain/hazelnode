@@ -15,4 +15,6 @@ export interface HazelNode {
   position_y: number;
   /**	Type : Link - Hazel Node Type	*/
   type: string;
+  /**	Kind : Select	*/
+  kind?: 'Trigger' | 'Action';
 }
