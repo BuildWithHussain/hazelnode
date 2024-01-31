@@ -12,6 +12,7 @@ import type { Edge, Node } from 'reactflow';
 
 import WorkflowNode from '@/components/nodes/node';
 import { NodeDetailsSheetProvider } from '@/components/nodes/details-sheet';
+import AddNewNode from '@/components/nodes/add-new-node';
 
 export default function WorkflowEditor({
   hazelNodes,
@@ -22,6 +23,7 @@ export default function WorkflowEditor({
   const nodeTypes = useMemo(
     () => ({
       workflowNode: WorkflowNode,
+      addNewNode: AddNewNode,
     }),
     [],
   );
@@ -58,7 +60,7 @@ export default function WorkflowEditor({
 }
 
 function getProcessedNodes(hazelNodes: Array<HazelNode>): Array<Node> {
-  const processedNodes: Array<Node<HazelNode>> = [];
+  const processedNodes: Array<Node<HazelNode | null>> = [];
 
   let currentY = 100;
   const stepY = 120;
@@ -78,6 +80,16 @@ function getProcessedNodes(hazelNodes: Array<HazelNode>): Array<Node> {
     // layout vertically
     currentY += stepY;
   }
+
+  // To allow user to add new nodes
+  processedNodes.push({
+    id: 'add-new',
+    position: { x: centerX, y: currentY },
+    data: null,
+    type: 'addNewNode',
+    draggable: false,
+    focusable: true,
+  });
 
   return processedNodes;
 }
