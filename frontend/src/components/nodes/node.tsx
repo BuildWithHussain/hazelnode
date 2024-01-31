@@ -1,10 +1,10 @@
 // import { useCallback } from 'react';
-import { Handle, NodeProps, Position, useOnSelectionChange } from 'reactflow';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
+import { Handle, NodeProps, Position, useOnSelectionChange } from 'reactflow';
+import { Button } from '@/components/ui/button';
 import { useSheet } from '@/hooks/node-sheet';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
   const { setOpen } = useSheet();
@@ -12,7 +12,7 @@ export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
     onChange: ({ nodes }) => {
       for (const node of nodes) {
         if (node.id == data.name) {
-          setOpen(true);
+          setOpen(true, data);
         }
       }
     },
@@ -35,16 +35,18 @@ export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
                 {data.kind}
               </Badge>
             </CardTitle>
-            <Button onClick={() => setOpen(true)} plain>
+            <Button onClick={() => setOpen(true, data)} plain>
               <PencilIcon size={16} />
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </CardContent>
+        {/* {selected && (
+          <CardContent>
+          </CardContent>
+        )} */}
       </Card>
-      <Handle type="target" position={Position.Bottom} />
+      <Handle type="source" position={Position.Bottom} />
+      <Handle type="target" position={Position.Top} />
     </>
   );
 }
