@@ -1,18 +1,13 @@
 import 'reactflow/dist/style.css';
 
 import { useEffect, useMemo } from 'react';
-import ReactFlow, {
-  Background,
-  BackgroundVariant,
-  Controls,
-  useEdgesState,
-  useNodesState,
-} from 'reactflow';
+import ReactFlow, { Background, BackgroundVariant, Controls } from 'reactflow';
 import type { Edge, Node } from 'reactflow';
 
 import WorkflowNode from '@/components/nodes/node';
 import { NodeDetailsSheetProvider } from '@/components/nodes/details-sheet';
 import AddNewNode from '@/components/nodes/add-new-node';
+import { useEditorStore } from '@/stores/workflow-editor';
 
 export default function WorkflowEditor({
   hazelNodes,
@@ -28,23 +23,29 @@ export default function WorkflowEditor({
     [],
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const editorStore = useEditorStore((state) => ({
+    nodes: state.nodes,
+    edges: state.edges,
+    onNodesChange: state.onNodesChange,
+    onEdgesChange: state.onEdgesChange,
+    setNodes: state.setNodes,
+    setEdges: state.setEdges,
+  }));
 
   useEffect(() => {
     const processedNodes = getProcessedNodes(hazelNodes);
-    setNodes(processedNodes);
-    setEdges(getProcessedEdges(processedNodes));
-  }, [hazelNodes, setNodes, setEdges]);
+    editorStore.setNodes(processedNodes);
+    editorStore.setEdges(getProcessedEdges(processedNodes));
+  }, [hazelNodes]);
 
   return (
     <NodeDetailsSheetProvider>
       <ReactFlow
         className="h-full w-full"
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        nodes={editorStore.nodes}
+        edges={editorStore.edges}
+        onNodesChange={editorStore.onNodesChange}
+        onEdgesChange={editorStore.onEdgesChange}
         nodeTypes={nodeTypes}
       >
         <Controls position={'top-right'} />
