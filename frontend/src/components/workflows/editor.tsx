@@ -5,7 +5,6 @@ import ReactFlow, {
   Background,
   BackgroundVariant,
   Controls,
-  MiniMap,
   useEdgesState,
   useNodesState,
 } from 'reactflow';
@@ -47,7 +46,6 @@ export default function WorkflowEditor({
         nodeTypes={nodeTypes}
       >
         <Controls position={'top-right'} />
-        <MiniMap />
         <Background
           className="bg-zinc-50"
           variant={BackgroundVariant.Dots}
