@@ -1,5 +1,5 @@
 // import { useCallback } from 'react';
-import { Handle, NodeProps, Position } from 'reactflow';
+import { Handle, NodeProps, Position, useOnSelectionChange } from 'reactflow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
@@ -8,10 +8,22 @@ import { Badge } from '../ui/badge';
 
 export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
   const { setOpen } = useSheet();
+  useOnSelectionChange({
+    onChange: ({ nodes }) => {
+      for (const node of nodes) {
+        if (node.id == data.name) {
+          setOpen(true);
+        }
+      }
+    },
+  });
 
   return (
     <>
-      <Card className={selected ? 'border-2 border-lime-400/80' : ''}>
+      <Card
+        className={selected ? 'border-2 border-lime-400/80' : ''}
+        style={{ minWidth: '24rem' }}
+      >
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>
