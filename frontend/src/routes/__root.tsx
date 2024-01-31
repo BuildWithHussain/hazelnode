@@ -25,8 +25,8 @@ export const Route = rootRouteWithContext<{
   errorComponent: () => <p>User Data loading failed...</p>,
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold text-gray-800">
+      <div className="flex gap-2 p-2">
+        <Link to="/" className="text-gray-800 [&.active]:font-bold">
           Hazel✨Node
         </Link>
       </div>
@@ -36,8 +36,8 @@ export const Route = rootRouteWithContext<{
         <Outlet />
       </div>
       <Toaster />
-      <TanStackRouterDevtools position="bottom-right" />
-      <ReactQueryDevtools buttonPosition="top-right" />
+      <TanStackRouterDevtools position="bottom-left" />
+      <ReactQueryDevtools buttonPosition="bottom-right" />
     </>
   ),
 });
