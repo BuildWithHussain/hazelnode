@@ -15,6 +15,8 @@ import ReactFlow, {
   useNodesState,
 } from 'reactflow';
 
+import type { Node } from 'reactflow';
+
 import { useCallback, useMemo } from 'react';
 
 import 'reactflow/dist/style.css';
@@ -31,6 +33,7 @@ export function WorkflowDetails() {
   const workflowDoc = useSuspenseDoc(params.id);
   const deleteWorkflowMutation = useDeleteDocMutation();
 
+  // Registering custom node types
   const nodeTypes = useMemo(
     () => ({
       workflowNode: WorkflowNode,
@@ -64,16 +67,28 @@ export function WorkflowDetails() {
     );
   }
 
-  const workflowNodes = workflowDoc.data?.nodes?.map((node) => {
-    return {
+  const hazelNodes = workflowDoc.data.nodes || [];
+  const processedNodes: Array<Node<HazelNode>> = [];
+
+  let currentY = 100;
+  const stepY = 120;
+  const centerX = 300;
+
+  for (const node of hazelNodes) {
+    processedNodes.push({
       id: node.name,
-      position: { x: node.position_x, y: node.position_y },
+      position: { x: centerX, y: currentY },
       data: { ...node },
       type: 'workflowNode',
-    };
-  });
+      draggable: false,
+      focusable: true,
+    });
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(workflowNodes || []);
+    // layout vertically
+    currentY += stepY;
+  }
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(processedNodes || []);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback(
