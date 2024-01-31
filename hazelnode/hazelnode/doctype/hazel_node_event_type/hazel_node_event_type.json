@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-01-31 15:39:08.358338",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "column_break_avcn",
+  "node_type",
+  "section_break_cjgk",
+  "params"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "node_type",
+   "fieldtype": "Link",
+   "label": "Node Type",
+   "options": "Hazel Node Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_avcn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_cjgk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "params",
+   "fieldtype": "Table",
+   "label": "Params",
+   "options": "Hazel Event Param"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-01-31 15:50:40.285343",
+ "modified_by": "Administrator",
+ "module": "Hazelnode",
+ "name": "Hazel Node Event Type",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1
+}

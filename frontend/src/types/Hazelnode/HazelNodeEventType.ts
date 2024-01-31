@@ -1,6 +1,6 @@
 import { HazelEventParam } from './HazelEventParam'
 
-export interface HazelNodeType{
+export interface HazelNodeEventType{
 	creation: string
 	name: string
 	modified: string
@@ -11,12 +11,10 @@ export interface HazelNodeType{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Preview Image : Attach Image	*/
-	preview_image?: string
-	/**	Description : Small Text	*/
-	description?: string
-	/**	Kind : Select	*/
-	kind: "Trigger" | "Action"
+	/**	Title : Data	*/
+	title: string
+	/**	Node Type : Link - Hazel Node Type	*/
+	node_type: string
 	/**	Params : Table - Hazel Event Param	*/
 	params?: HazelEventParam[]
 }

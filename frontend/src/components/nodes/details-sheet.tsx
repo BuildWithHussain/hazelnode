@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/sheet';
 import { createContext, useCallback, useState } from 'react';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '../ui/badge';
 
 export const SheetContext = createContext<{
   isOpen: boolean;
@@ -33,9 +34,19 @@ export function NodeDetailsSheetProvider({
     <SheetContext.Provider value={{ isOpen, setOpen }}>
       {children}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetContent className="w-[31rem] sm:w-[800px]">
+        <SheetContent className="min-w-[40rem]">
           <SheetHeader>
-            <SheetTitle>{node?.type}</SheetTitle>
+            <SheetTitle>
+              <div className="flex items-center">
+                {node?.type}
+                <Badge
+                  color={node?.kind == 'Trigger' ? 'lime' : 'zinc'}
+                  className="ml-2"
+                >
+                  {node?.kind}
+                </Badge>
+              </div>
+            </SheetTitle>
             <Separator className="my-4" />
             <SheetDescription>
               <pre>{JSON.stringify(node, null, 2)}</pre>
