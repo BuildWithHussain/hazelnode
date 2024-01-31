@@ -48,7 +48,12 @@ export default function WorkflowEditor({
       >
         <Controls position={'top-right'} />
         <MiniMap />
-        <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+        <Background
+          className="bg-zinc-50"
+          variant={BackgroundVariant.Dots}
+          gap={18}
+          size={1}
+        />
       </ReactFlow>
     </NodeDetailsSheetProvider>
   );
