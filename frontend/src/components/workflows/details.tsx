@@ -15,7 +15,7 @@ import ReactFlow, {
   useNodesState,
 } from 'reactflow';
 
-import type { Node } from 'reactflow';
+import type { Edge, Node } from 'reactflow';
 
 import { useCallback, useMemo } from 'react';
 
@@ -82,14 +82,27 @@ export function WorkflowDetails() {
       type: 'workflowNode',
       draggable: false,
       focusable: true,
+      // deletable: false, TODO: Enable when we are handling this!
     });
 
     // layout vertically
     currentY += stepY;
   }
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(processedNodes || []);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const processedEdges: Array<Edge> = [];
+
+  // connect 1 with 2, 2 with 3, 3 with 4, etc.
+  for (let i = 0; i < processedNodes.length - 1; i++) {
+    processedEdges.push({
+      id: `${processedNodes[i].id}-${processedNodes[i + 1].id}`,
+      source: processedNodes[i].id,
+      target: processedNodes[i + 1].id,
+      deletable: false,
+    });
+  }
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(processedNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(processedEdges);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
