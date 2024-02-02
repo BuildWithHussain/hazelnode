@@ -6,6 +6,8 @@ app_email = 'buildwithhussain@gmail.com'
 app_license = 'agpl-3.0'
 # required_apps = []
 
+export_python_type_annotations = True
+
 # Includes in <head>
 # ------------------
 
