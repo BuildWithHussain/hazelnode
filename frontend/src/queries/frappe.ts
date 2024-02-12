@@ -47,7 +47,7 @@ export function useDocType<DT>(doctype: DocTypeName) {
 }
 
 export function getListQueryOptions<DT>(
-  doctype: string,
+  doctype: DocTypeName,
   params: DocTypeQueryParams<DT>,
 ) {
   if (!params.fields) {
@@ -84,7 +84,7 @@ export function useDocument<DT>(doctype: DocTypeName, name: string) {
 }
 
 export function useDocumentList<DT>(
-  doctype: string,
+  doctype: DocTypeName,
   params: DocTypeQueryParams<DT> = {},
 ) {
   return useQuery(getListQueryOptions<DT>(doctype, params));
