@@ -5,7 +5,6 @@ import ReactFlow, { Background, BackgroundVariant, Controls } from 'reactflow';
 import type { Edge, Node } from 'reactflow';
 
 import WorkflowNode from '@/components/nodes/node';
-import { NodeDetailsSheetProvider } from '@/components/nodes/details-sheet';
 import AddNewNode from '@/components/nodes/add-new-node';
 import { useEditorStore } from '@/stores/workflow-editor';
 
@@ -39,24 +38,22 @@ export default function WorkflowEditor({
   }, [hazelNodes]);
 
   return (
-    <NodeDetailsSheetProvider>
-      <ReactFlow
-        className="h-full w-full"
-        nodes={editorStore.nodes}
-        edges={editorStore.edges}
-        onNodesChange={editorStore.onNodesChange}
-        onEdgesChange={editorStore.onEdgesChange}
-        nodeTypes={nodeTypes}
-      >
-        <Controls position={'top-right'} />
-        <Background
-          className="bg-zinc-50"
-          variant={BackgroundVariant.Dots}
-          gap={18}
-          size={1}
-        />
-      </ReactFlow>
-    </NodeDetailsSheetProvider>
+    <ReactFlow
+      className="h-full w-full"
+      nodes={editorStore.nodes}
+      edges={editorStore.edges}
+      onNodesChange={editorStore.onNodesChange}
+      onEdgesChange={editorStore.onEdgesChange}
+      nodeTypes={nodeTypes}
+    >
+      <Controls position={'top-right'} />
+      <Background
+        className="bg-zinc-50"
+        variant={BackgroundVariant.Dots}
+        gap={18}
+        size={1}
+      />
+    </ReactFlow>
   );
 }
 

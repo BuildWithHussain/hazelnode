@@ -1,17 +1,15 @@
 import { PencilIcon } from 'lucide-react';
 import { Handle, NodeProps, Position, useOnSelectionChange } from 'reactflow';
 import { Button } from '@/components/ui/button';
-import { useSheet } from '@/hooks/node-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
-  const { setOpen } = useSheet();
   useOnSelectionChange({
     onChange: ({ nodes }) => {
       for (const node of nodes) {
         if (node.id === data.name) {
-          setOpen(true, data);
+          // do something when a node is selected
         }
       }
     },
@@ -34,7 +32,9 @@ export default function WorkflowNode({ data, selected }: NodeProps<HazelNode>) {
                 {data.kind}
               </Badge>
             </CardTitle>
-            <Button onClick={() => setOpen(true, data)} plain>
+            <Button onClick={() => {
+              // do something on edit click
+            }} plain>
               <PencilIcon size={16} />
             </Button>
           </div>
