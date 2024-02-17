@@ -19,6 +19,7 @@ class HazelNodeType(Document):
 		)
 
 		description: DF.SmallText | None
+		handler_path: DF.Data
 		kind: DF.Literal['Trigger', 'Action']
 		params: DF.Table[HazelEventParam]
 		preview_image: DF.AttachImage | None

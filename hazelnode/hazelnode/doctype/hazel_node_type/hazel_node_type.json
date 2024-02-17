@@ -10,6 +10,7 @@
   "description",
   "column_break_jnvj",
   "kind",
+  "handler_path",
   "section_break_wsnq",
   "params"
  ],
@@ -45,6 +46,13 @@
    "fieldtype": "Table",
    "label": "Params",
    "options": "Hazel Event Param"
+  },
+  {
+   "description": "Dotted path to the handler class",
+   "fieldname": "handler_path",
+   "fieldtype": "Data",
+   "label": "Handler Path",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -54,7 +62,7 @@
    "link_fieldname": "node_type"
   }
  ],
- "modified": "2024-01-31 17:27:57.136307",
+ "modified": "2024-02-17 19:35:33.852067",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Node Type",

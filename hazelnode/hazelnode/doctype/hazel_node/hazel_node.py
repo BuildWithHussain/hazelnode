@@ -1,7 +1,7 @@
 # Copyright (c) 2024, Build With Hussain and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 
@@ -23,4 +23,11 @@ class HazelNode(Document):
 		type: DF.Link
 	# end: auto-generated types
 
-	pass
+	def execute(self, params=None, context=None):
+		handler_path = frappe.db.get_value(
+			'Hazel Node Type', self.type, 'handler_path'
+		)
+		module_path, classname = handler_path.rsplit('.', 1)
+		module = frappe.get_module(module_path)
+		class_ = getattr(module, classname, None)
+		class_().execute(self.event, params, context)
