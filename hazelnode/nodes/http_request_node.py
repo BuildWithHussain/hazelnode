@@ -1,8 +1,10 @@
 import frappe
 import requests
 
+from . import Node
 
-class HTTPRequestNode:
+
+class HTTPRequestNode(Node):
 	def execute(self, event, params=None, context=None):
 		event_title = frappe.db.get_value(
 			'Hazel Node Event Type', event, 'title'

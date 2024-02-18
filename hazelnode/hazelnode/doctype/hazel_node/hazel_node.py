@@ -4,6 +4,8 @@
 import frappe
 from frappe.model.document import Document
 
+from hazelnode.nodes import Node
+
 
 class HazelNode(Document):
 	# begin: auto-generated types
@@ -30,4 +32,5 @@ class HazelNode(Document):
 		module_path, classname = handler_path.rsplit('.', 1)
 		module = frappe.get_module(module_path)
 		class_ = getattr(module, classname, None)
-		class_().execute(self.event, params, context)
+		obj: Node = class_()
+		obj.execute(self.event, params, context)
