@@ -1,0 +1,55 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-02-18 17:31:24.589295",
+ "doctype": "DocType",
+ "engine": "MyISAM",
+ "field_order": [
+  "webhook",
+  "context"
+ ],
+ "fields": [
+  {
+   "fieldname": "context",
+   "fieldtype": "Code",
+   "label": "Context",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "webhook",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Webhook",
+   "options": "Hazel Webhook Listener",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-02-18 17:57:34.749339",
+ "modified_by": "Administrator",
+ "module": "Hazelnode",
+ "name": "Hazel Webhook Log",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
