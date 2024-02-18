@@ -18,9 +18,8 @@ export const Route = rootRouteWithContext<{
       window.location.href = '/login?redirect-to=' + location.pathname;
     }
   },
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(userQueryOptions);
-  },
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(userQueryOptions),
   pendingComponent: () => <p>User Data loading pending...</p>,
   errorComponent: () => <p>User Data loading failed...</p>,
   component: () => (
