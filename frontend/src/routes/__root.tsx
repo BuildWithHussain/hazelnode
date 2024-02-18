@@ -2,7 +2,12 @@ import '@/index.css';
 
 import { QueryClient } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
-import { Link, Outlet, rootRouteWithContext } from '@tanstack/react-router';
+import {
+  ErrorComponent,
+  Link,
+  Outlet,
+  rootRouteWithContext,
+} from '@tanstack/react-router';
 import { options as userQueryOptions } from '@/queries/user';
 
 // Dev Tools (does not get bundled in production)
@@ -21,7 +26,7 @@ export const Route = rootRouteWithContext<{
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(userQueryOptions),
   pendingComponent: () => <p>User Data loading pending...</p>,
-  errorComponent: () => <p>User Data loading failed...</p>,
+  errorComponent: ({ error }) => <ErrorComponent error={error} />,
   component: () => (
     <>
       <div className="flex gap-2 p-2">

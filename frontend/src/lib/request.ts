@@ -7,6 +7,14 @@ interface APIRequestOptions {
   params?: object;
 }
 
+interface FrappeException {
+  exception: string;
+  indicator: 'red';
+  message: string;
+  title: string;
+  type: string;
+}
+
 export async function makeRequest(options: APIRequestOptions) {
   if (!options.type || !options.path) {
     throw new Error('Invalid request options');
@@ -39,8 +47,9 @@ export async function makeRequest(options: APIRequestOptions) {
   const data = await response.json();
 
   if (!response.ok) {
-    console.error('Errors from Frappe API', data.errors);
-    throw new Error('Error occurred while fetching data...');
+    const errors = data.errors as FrappeException[];
+    const errorMessage = errors.map((e) => e.message).join(',');
+    throw new Error(errorMessage);
   }
 
   if (data.data) {
