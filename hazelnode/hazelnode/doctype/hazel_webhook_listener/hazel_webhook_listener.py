@@ -1,7 +1,7 @@
 # Copyright (c) 2024, Build With Hussain and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 
@@ -17,4 +17,11 @@ class HazelWebhookListener(Document):
 		workflow: DF.Link
 	# end: auto-generated types
 
-	pass
+	def validate(self):
+		self.validate_unique_workflow()
+
+	def validate_unique_workflow(self):
+		if frappe.db.exists(
+			'Hazel Webhook Listener', {'workflow': self.workflow}
+		):
+			frappe.throw('Listener for this workflow already exists!')
