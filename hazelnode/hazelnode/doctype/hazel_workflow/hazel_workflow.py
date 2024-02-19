@@ -41,6 +41,9 @@ class HazelWorkflow(Document):
 			)
 
 	def execute(self, context=None):
+		if not self.enabled:
+			return
+
 		execution_log = frappe.new_doc('Hazel Workflow Execution Log')
 		execution_log.workflow = self.name
 		# execution_log.status = "Running"
