@@ -7,6 +7,10 @@
  "field_order": [
   "enabled",
   "title",
+  "trigger_section",
+  "trigger_type",
+  "column_break_prrb",
+  "trigger_config",
   "section_break_jlvd",
   "nodes"
  ],
@@ -33,6 +37,28 @@
    "fieldtype": "Table",
    "label": "Nodes",
    "options": "Hazel Node"
+  },
+  {
+   "fieldname": "trigger_section",
+   "fieldtype": "Section Break",
+   "label": "Trigger"
+  },
+  {
+   "fieldname": "trigger_type",
+   "fieldtype": "Link",
+   "label": "Trigger Type",
+   "options": "Hazel Node Type"
+  },
+  {
+   "fieldname": "column_break_prrb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "{}",
+   "fieldname": "trigger_config",
+   "fieldtype": "JSON",
+   "label": "Trigger Config",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -42,7 +68,7 @@
    "link_fieldname": "workflow"
   }
  ],
- "modified": "2024-01-23 18:40:06.365310",
+ "modified": "2024-02-19 19:38:22.749036",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow",

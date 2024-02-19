@@ -15,6 +15,10 @@ export interface HazelWorkflow{
 	enabled?: 0 | 1
 	/**	Title : Data	*/
 	title: string
+	/**	Trigger Type : Link - Hazel Node Type	*/
+	trigger_type?: string
+	/**	Trigger Config : JSON	*/
+	trigger_config?: any
 	/**	Nodes : Table - Hazel Node	*/
 	nodes?: HazelNode[]
 }

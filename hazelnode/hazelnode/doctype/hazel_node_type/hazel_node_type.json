@@ -48,11 +48,12 @@
    "options": "Hazel Event Param"
   },
   {
+   "depends_on": "eval:doc.kind===\"Action\"",
    "description": "Dotted path to the handler class",
    "fieldname": "handler_path",
    "fieldtype": "Data",
    "label": "Handler Path",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.kind===\"Action\""
   }
  ],
  "index_web_pages_for_search": 1,
@@ -62,7 +63,7 @@
    "link_fieldname": "node_type"
   }
  ],
- "modified": "2024-02-17 19:35:33.852067",
+ "modified": "2024-02-19 19:35:11.651420",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Node Type",

@@ -22,23 +22,25 @@ class HazelWorkflow(Document):
 		name: DF.Int | None
 		nodes: DF.Table[HazelNode]
 		title: DF.Data
+		trigger_config: DF.JSON | None
+		trigger_type: DF.Link | None
 	# end: auto-generated types
 
 	def validate(self):
-		self.validate_first_node_is_trigger()
-		self.validate_only_one_trigger_node()
+		self.validate_nodes()
 
-	def validate_first_node_is_trigger(self):
-		if not self.nodes[0].kind == 'Trigger':
-			frappe.throw(
-				'First node in a workflow must be a trigger!'
-			)
+	def validate_nodes(self):
+		self.validate_trigger_is_required()
 
-	def validate_only_one_trigger_node(self):
-		if list(n.kind for n in self.nodes).count('Trigger') > 1:
-			frappe.throw(
-				'There must be only one trigger node in a workflow!'
-			)
+		for i, node in enumerate(self.nodes):
+			if not node.kind == 'Action':
+				frappe.throw(
+					f'Node {frappe.bold(node.type)}, on row #{i+1} must be an action node!'
+				)
+
+	def validate_trigger_is_required(self):
+		if len(self.nodes) > 0 and not self.trigger_type:
+			frappe.throw('Trigger is required for the workflow!')
 
 	def execute(self, context=None):
 		if not self.enabled:
@@ -49,7 +51,7 @@ class HazelWorkflow(Document):
 		# execution_log.status = "Running"
 
 		try:
-			for node in self.nodes[1:]:
+			for node in self.nodes:
 				print('executing: ', node, node.type, node.event)
 				parameters = frappe.parse_json(node.parameters)
 				context = node.execute(parameters, context)
