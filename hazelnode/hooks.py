@@ -10,7 +10,7 @@ export_python_type_annotations = True
 
 
 page_renderer = [
-	'hazelnode.hazel_webhook_handler.HazelWebhookHandler'
+	'hazelnode.nodes.triggers.hazel_webhook_handler.HazelWebhookHandler'
 ]
 
 # Includes in <head>
