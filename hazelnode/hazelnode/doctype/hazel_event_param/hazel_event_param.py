@@ -15,7 +15,10 @@ class HazelEventParam(Document):
 		from frappe.types import DF
 
 		fieldname: DF.Data
-		fieldtype: DF.Literal['Data', 'Check', 'Number', 'Date']
+		fieldtype: DF.Literal[
+			'Data', 'Check', 'Number', 'Date', 'Select', 'Link'
+		]
+		options: DF.SmallText | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

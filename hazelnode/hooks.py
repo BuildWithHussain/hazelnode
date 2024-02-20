@@ -129,13 +129,13 @@ page_renderer = [
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	'*': {
+		'after_insert': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
+		'on_change': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
+		'after_delete': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
+	}
+}
 
 # Scheduled Tasks
 # ---------------

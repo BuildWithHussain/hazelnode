@@ -13,7 +13,9 @@ export interface HazelEventParam{
 	/**	Title : Data	*/
 	title: string
 	/**	Fieldtype : Select	*/
-	fieldtype: "Data" | "Check" | "Number" | "Date"
+	fieldtype: "Data" | "Check" | "Number" | "Date" | "Select" | "Link"
 	/**	Fieldname : Data	*/
 	fieldname: string
+	/**	Options : Small Text	*/
+	options?: string
 }
