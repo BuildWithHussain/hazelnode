@@ -58,6 +58,7 @@ class HazelWorkflow(Document):
 			execution_log.status = 'Success'
 		except Exception:
 			execution_log.status = 'Failure'
+			execution_log.traceback = frappe.get_traceback()
 		finally:
 			execution_log.insert(ignore_permissions=True)
 			execution_log.submit()

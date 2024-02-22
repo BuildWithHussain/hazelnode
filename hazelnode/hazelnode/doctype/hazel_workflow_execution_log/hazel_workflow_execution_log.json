@@ -10,7 +10,9 @@
   "workflow_title",
   "amended_from",
   "column_break_zpxm",
-  "status"
+  "status",
+  "section_break_dbjb",
+  "traceback"
  ],
  "fields": [
   {
@@ -44,6 +46,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "Success\nFailure\nRunning"
   },
@@ -52,12 +55,23 @@
    "fieldname": "workflow_title",
    "fieldtype": "Data",
    "label": "Workflow Title"
+  },
+  {
+   "depends_on": "eval:doc.status==\"Failure\"",
+   "fieldname": "traceback",
+   "fieldtype": "Code",
+   "label": "Traceback",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_dbjb",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-17 19:28:18.754463",
+ "modified": "2024-02-22 11:07:49.757841",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow Execution Log",

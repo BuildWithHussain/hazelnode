@@ -18,4 +18,6 @@ export interface HazelWorkflowExecutionLog{
 	amended_from?: string
 	/**	Status : Select	*/
 	status?: "Success" | "Failure" | "Running"
+	/**	Traceback : Code	*/
+	traceback?: string
 }
