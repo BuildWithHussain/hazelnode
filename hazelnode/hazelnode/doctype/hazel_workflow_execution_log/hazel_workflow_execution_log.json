@@ -3,7 +3,7 @@
  "autoname": "autoincrement",
  "creation": "2024-01-22 19:34:41.097263",
  "doctype": "DocType",
- "engine": "InnoDB",
+ "engine": "MyISAM",
  "field_order": [
   "section_break_prdk",
   "workflow",
@@ -113,10 +113,10 @@
    "options": "Hazel Execution Node Log"
   }
  ],
- "index_web_pages_for_search": 1,
+ "in_create": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-22 13:09:04.677321",
+ "modified": "2024-02-24 12:19:16.516992",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow Execution Log",
@@ -141,5 +141,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "workflow_title"
+ "title_field": "workflow_title",
+ "track_seen": 1
 }
