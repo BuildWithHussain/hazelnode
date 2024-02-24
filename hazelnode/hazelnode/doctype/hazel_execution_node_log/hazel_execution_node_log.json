@@ -1,0 +1,70 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-02-22 12:57:50.512387",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "node_type",
+  "context",
+  "output",
+  "column_break_iyhl",
+  "event",
+  "params"
+ ],
+ "fields": [
+  {
+   "fieldname": "node_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Node Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "context",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Context",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_iyhl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Event",
+   "read_only": 1
+  },
+  {
+   "fieldname": "params",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Params",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "output",
+   "fieldtype": "Code",
+   "label": "Output",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-02-22 13:04:03.715559",
+ "modified_by": "Administrator",
+ "module": "Hazelnode",
+ "name": "Hazel Execution Node Log",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

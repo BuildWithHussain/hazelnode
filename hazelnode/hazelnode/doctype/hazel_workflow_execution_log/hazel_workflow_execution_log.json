@@ -12,7 +12,14 @@
   "column_break_zpxm",
   "status",
   "section_break_dbjb",
-  "traceback"
+  "traceback",
+  "section_break_ovth",
+  "trigger_type",
+  "column_break_fuyh",
+  "trigger_config",
+  "section_break_zldk",
+  "node_logs",
+  "initial_context"
  ],
  "fields": [
   {
@@ -66,12 +73,50 @@
   {
    "fieldname": "section_break_dbjb",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_zldk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_ovth",
+   "fieldtype": "Section Break",
+   "label": "Workflow Snapshot"
+  },
+  {
+   "fieldname": "trigger_type",
+   "fieldtype": "Data",
+   "label": "Trigger Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fuyh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "initial_context",
+   "fieldtype": "Code",
+   "label": "Initial Context",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trigger_config",
+   "fieldtype": "Code",
+   "label": "Trigger Config",
+   "read_only": 1
+  },
+  {
+   "fieldname": "node_logs",
+   "fieldtype": "Table",
+   "label": "Node Logs",
+   "options": "Hazel Execution Node Log"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-22 11:07:49.757841",
+ "modified": "2024-02-22 13:09:04.677321",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow Execution Log",

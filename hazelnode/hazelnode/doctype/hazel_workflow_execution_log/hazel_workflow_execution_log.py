@@ -14,10 +14,18 @@ class HazelWorkflowExecutionLog(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		from hazelnode.hazelnode.doctype.hazel_execution_node_log.hazel_execution_node_log import (
+			HazelExecutionNodeLog,
+		)
+
 		amended_from: DF.Link | None
+		initial_context: DF.Code | None
 		name: DF.Int | None
+		node_logs: DF.Table[HazelExecutionNodeLog]
 		status: DF.Literal['Success', 'Failure', 'Running']
 		traceback: DF.Code | None
+		trigger_config: DF.Code | None
+		trigger_type: DF.Data | None
 		workflow: DF.Link
 		workflow_title: DF.Data | None
 	# end: auto-generated types

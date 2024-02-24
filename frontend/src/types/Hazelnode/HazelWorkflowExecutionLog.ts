@@ -1,3 +1,4 @@
+import { HazelExecutionNodeLog } from './HazelExecutionNodeLog'
 
 export interface HazelWorkflowExecutionLog{
 	creation: string
@@ -20,4 +21,12 @@ export interface HazelWorkflowExecutionLog{
 	status?: "Success" | "Failure" | "Running"
 	/**	Traceback : Code	*/
 	traceback?: string
+	/**	Trigger Type : Data	*/
+	trigger_type?: string
+	/**	Trigger Config : Code	*/
+	trigger_config?: string
+	/**	Node Logs : Table - Hazel Execution Node Log	*/
+	node_logs?: HazelExecutionNodeLog[]
+	/**	Initial Context : Code	*/
+	initial_context?: string
 }

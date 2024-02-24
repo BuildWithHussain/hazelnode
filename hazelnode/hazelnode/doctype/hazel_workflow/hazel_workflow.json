@@ -57,8 +57,7 @@
    "default": "{}",
    "fieldname": "trigger_config",
    "fieldtype": "JSON",
-   "label": "Trigger Config",
-   "read_only": 1
+   "label": "Trigger Config"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -68,7 +67,7 @@
    "link_fieldname": "workflow"
   }
  ],
- "modified": "2024-02-19 19:38:22.749036",
+ "modified": "2024-02-22 12:48:30.074227",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow",

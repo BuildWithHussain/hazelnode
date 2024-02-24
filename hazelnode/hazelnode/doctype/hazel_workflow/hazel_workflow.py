@@ -43,22 +43,37 @@ class HazelWorkflow(Document):
 			frappe.throw('Trigger is required for the workflow!')
 
 	def execute(self, context=None):
-		if not self.enabled:
-			return
-
 		execution_log = frappe.new_doc('Hazel Workflow Execution Log')
 		execution_log.workflow = self.name
-		# execution_log.status = "Running"
+		execution_log.status = 'Running'
+		execution_log.trigger_type = self.trigger_type
+		execution_log.trigger_config = self.trigger_config
+		execution_log.initial_context = frappe.as_json(context)
+		execution_log.insert(ignore_permissions=True)
 
 		try:
 			for node in self.nodes:
 				print('executing: ', node, node.type, node.event)
 				parameters = frappe.parse_json(node.parameters)
-				context = node.execute(parameters, context)
-			execution_log.status = 'Success'
+				output = node.execute(parameters, context)
+				execution_log.append(
+					'node_logs',
+					{
+						'node_type': node.type,
+						'event': node.event,
+						'context': frappe.as_json(context),
+						'params': node.parameters,
+						'output': output,
+					},
+				)
+				execution_log.save(ignore_permissions=True)
+				context = output
+
+			execution_log.db_set('status', 'Success')
 		except Exception:
-			execution_log.status = 'Failure'
-			execution_log.traceback = frappe.get_traceback()
+			execution_log.db_set('status', 'Failure')
+			execution_log.db_set('traceback', frappe.get_traceback())
 		finally:
-			execution_log.insert(ignore_permissions=True)
+			execution_log.reload()
 			execution_log.submit()
+			frappe.db.commit()
