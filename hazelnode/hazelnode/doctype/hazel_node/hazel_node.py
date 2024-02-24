@@ -33,4 +33,4 @@ class HazelNode(Document):
 		module = frappe.get_module(module_path)
 		class_ = getattr(module, classname, None)
 		obj: Node = class_()
-		obj.execute(self.event, params, context)
+		return obj.execute(self.event, params, context)

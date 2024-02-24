@@ -10,8 +10,6 @@ class HTTPRequestNode(Node):
 			'Hazel Node Event Type', event, 'title'
 		)
 
-		print(event, event_title)
-
 		if event_title == 'GET':
 			url = params.get('url')
 			if not url:
@@ -19,5 +17,4 @@ class HTTPRequestNode(Node):
 					'URL is required to make HTTP GET Request'
 				)
 			response = requests.get(url)
-			print('Response', response.json())
-			return response
+			return response.json()

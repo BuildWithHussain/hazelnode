@@ -64,7 +64,7 @@ class HazelWorkflow(Document):
 						'event': node.event,
 						'context': frappe.as_json(context),
 						'params': node.parameters,
-						'output': output,
+						'output': frappe.as_json(output),
 					},
 				)
 				execution_log.save(ignore_permissions=True)
@@ -74,6 +74,7 @@ class HazelWorkflow(Document):
 		except Exception:
 			frappe.db.rollback(save_point='workflow_execution_start')
 			execution_log.db_set('status', 'Failure')
+			# TODO: Later take traceback to node log level
 			execution_log.db_set('traceback', frappe.get_traceback())
 		finally:
 			execution_log.reload()
