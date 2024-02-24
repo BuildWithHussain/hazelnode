@@ -7,3 +7,4 @@ node_modules
 __pycache__
 hazelnode/public/frontend
 hazelnode/www/frontend.html
+hazelnode/www/hazelnode.html

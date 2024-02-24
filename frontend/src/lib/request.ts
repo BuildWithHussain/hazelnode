@@ -40,6 +40,7 @@ export async function makeRequest(options: APIRequestOptions) {
     method: options.method,
     headers: {
       'Content-Type': 'application/json',
+      'X-Frappe-CSRF-Token': window.csrf_token
     },
     body,
   });
