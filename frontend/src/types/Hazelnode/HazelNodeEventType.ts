@@ -13,6 +13,8 @@ export interface HazelNodeEventType{
 	idx?: number
 	/**	Title : Data	*/
 	title: string
+	/**	Is Standard? : Check	*/
+	is_standard?: 0 | 1
 	/**	Node Type : Link - Hazel Node Type	*/
 	node_type: string
 	/**	Params : Table - Hazel Event Param	*/

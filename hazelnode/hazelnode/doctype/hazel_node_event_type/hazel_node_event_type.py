@@ -18,6 +18,7 @@ class HazelNodeEventType(Document):
 			HazelEventParam,
 		)
 
+		is_standard: DF.Check
 		name: DF.Int | None
 		node_type: DF.Link
 		params: DF.Table[HazelEventParam]

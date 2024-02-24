@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
+  "is_standard",
   "column_break_avcn",
   "node_type",
   "section_break_cjgk",
@@ -39,11 +40,17 @@
    "fieldtype": "Table",
    "label": "Params",
    "options": "Hazel Event Param"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_standard",
+   "fieldtype": "Check",
+   "label": "Is Standard?"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-31 15:50:40.285343",
+ "modified": "2024-02-24 19:50:58.923726",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Node Event Type",

@@ -1,0 +1,32 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Hazel Node Event Type",
+  "is_standard": 1,
+  "modified": "2024-02-24 19:51:13.858417",
+  "name": 2,
+  "node_type": "API Call",
+  "params": [],
+  "title": "POST"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Hazel Node Event Type",
+  "is_standard": 1,
+  "modified": "2024-02-24 19:51:18.311440",
+  "name": 1,
+  "node_type": "API Call",
+  "params": [
+   {
+    "fieldname": "url",
+    "fieldtype": "Data",
+    "options": null,
+    "parent": 1,
+    "parentfield": "params",
+    "parenttype": "Hazel Node Event Type",
+    "title": "URL"
+   }
+  ],
+  "title": "GET"
+ }
+]
