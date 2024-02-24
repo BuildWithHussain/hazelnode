@@ -11,6 +11,7 @@
   "column_break_jnvj",
   "kind",
   "handler_path",
+  "is_standard",
   "section_break_wsnq",
   "params"
  ],
@@ -54,6 +55,12 @@
    "fieldtype": "Data",
    "label": "Handler Path",
    "mandatory_depends_on": "eval:doc.kind===\"Action\""
+  },
+  {
+   "default": "0",
+   "fieldname": "is_standard",
+   "fieldtype": "Check",
+   "label": "Is Standard?"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -63,7 +70,7 @@
    "link_fieldname": "node_type"
   }
  ],
- "modified": "2024-02-19 19:35:11.651420",
+ "modified": "2024-02-24 19:42:33.968764",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Node Type",

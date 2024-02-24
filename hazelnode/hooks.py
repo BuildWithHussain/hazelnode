@@ -13,6 +13,8 @@ page_renderer = [
 	'hazelnode.nodes.triggers.hazel_webhook_handler.HazelWebhookHandler'
 ]
 
+fixtures = [{'dt': 'Hazel Node Type', 'filters': {'is_standard': 1}}]
+
 # Includes in <head>
 # ------------------
 

@@ -1,0 +1,98 @@
+[
+ {
+  "description": "Trigger a workflow on document lifecycle event.",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": null,
+  "is_standard": 1,
+  "kind": "Trigger",
+  "modified": "2024-02-24 19:42:46.343266",
+  "name": "Document Event",
+  "params": [
+   {
+    "fieldname": "event",
+    "fieldtype": "Select",
+    "options": "New\nOn Change\nOn Delete",
+    "parent": "Document Event",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "Event"
+   },
+   {
+    "fieldname": "doctype",
+    "fieldtype": "Link",
+    "options": "DocType",
+    "parent": "Document Event",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "DocType"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": "Listens to webhook events",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": null,
+  "is_standard": 1,
+  "kind": "Trigger",
+  "modified": "2024-02-24 19:42:46.444650",
+  "name": "Webhook Listener",
+  "params": [
+   {
+    "fieldname": "webhook_id",
+    "fieldtype": "Data",
+    "options": null,
+    "parent": "Webhook Listener",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "Listener ID"
+   },
+   {
+    "fieldname": "use_secret",
+    "fieldtype": "Check",
+    "options": null,
+    "parent": "Webhook Listener",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "Secure with secret?"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": null,
+  "is_standard": 1,
+  "kind": "Trigger",
+  "modified": "2024-02-24 19:42:46.424285",
+  "name": "Schedule Event",
+  "params": [
+   {
+    "fieldname": "expression",
+    "fieldtype": "Data",
+    "options": null,
+    "parent": "Schedule Event",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "CRON expression"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.http_request_node.HTTPRequestNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-02-24 19:42:46.459082",
+  "name": "API Call",
+  "params": [],
+  "preview_image": null
+ }
+]

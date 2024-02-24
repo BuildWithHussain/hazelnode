@@ -19,6 +19,8 @@ export interface HazelNodeType{
 	kind: "Trigger" | "Action"
 	/**	Handler Path : Data - Dotted path to the handler class	*/
 	handler_path?: string
+	/**	Is Standard? : Check	*/
+	is_standard?: 0 | 1
 	/**	Params : Table - Hazel Event Param	*/
 	params?: HazelEventParam[]
 }
