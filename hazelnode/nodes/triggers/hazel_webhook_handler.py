@@ -3,12 +3,18 @@ from typing import Optional
 import frappe
 from werkzeug.wrappers import Response
 
+from hazelnode.exceptions import HazelWorkflowExecutionError
+from hazelnode.hazelnode.doctype.hazel_workflow.hazel_workflow import (
+	HazelWorkflow,
+)
+
 
 class HazelWebhookHandler:
 	def __init__(self, path: str, status_code: Optional[int] = None):
 		self.path = path
 		self.webhook_id = None
 		self.request_obj = frappe.request
+		self.hazel_webhook_log = None
 
 	def can_render(self):
 		if not self.path.startswith('hazelnode_webhooks/'):
@@ -45,7 +51,7 @@ class HazelWebhookHandler:
 		return request_data
 
 	def create_hazel_webhook_log(self, serializable_context):
-		frappe.get_doc(
+		self.hazel_webhook_log = frappe.get_doc(
 			{
 				'doctype': 'Hazel Webhook Log',
 				'webhook': self.webhook_id,
@@ -62,6 +68,17 @@ class HazelWebhookHandler:
 			{'request_obj': self.request_obj, **serializable_context}
 		)
 		# execute workflow
-		frappe.get_doc('Hazel Workflow', linked_workflow).execute(
-			context
+		wf: HazelWorkflow = frappe.get_doc(
+			'Hazel Workflow', linked_workflow
 		)
+
+		try:
+			wf.execute(context, raise_exception=True)
+		except:
+			self.hazel_webhook_log.db_set(
+				'response_status', 'Failure'
+			)
+			frappe.throw(
+				'Workflow execution failure',
+				HazelWorkflowExecutionError,
+			)

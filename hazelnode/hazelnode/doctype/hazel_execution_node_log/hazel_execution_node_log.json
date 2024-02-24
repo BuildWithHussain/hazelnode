@@ -4,7 +4,7 @@
  "creation": "2024-02-22 12:57:50.512387",
  "doctype": "DocType",
  "editable_grid": 1,
- "engine": "InnoDB",
+ "engine": "MyISAM",
  "field_order": [
   "node_type",
   "context",

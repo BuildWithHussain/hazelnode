@@ -18,8 +18,13 @@
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-02-18 16:56:39.550019",
+ "links": [
+  {
+   "link_doctype": "Hazel Webhook Log",
+   "link_fieldname": "webhook"
+  }
+ ],
+ "modified": "2024-02-24 12:29:25.570767",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Webhook Listener",

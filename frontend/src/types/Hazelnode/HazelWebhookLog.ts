@@ -12,6 +12,8 @@ export interface HazelWebhookLog{
 	idx?: number
 	/**	Webhook : Link - Hazel Webhook Listener	*/
 	webhook: string
+	/**	Response Status : Select	*/
+	response_status?: "Success" | "Failure"
 	/**	Context : Code	*/
 	context?: string
 }

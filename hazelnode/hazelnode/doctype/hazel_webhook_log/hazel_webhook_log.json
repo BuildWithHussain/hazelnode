@@ -6,6 +6,8 @@
  "engine": "MyISAM",
  "field_order": [
   "webhook",
+  "response_status",
+  "column_break_sjvo",
   "context"
  ],
  "fields": [
@@ -24,12 +26,24 @@
    "options": "Hazel Webhook Listener",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_sjvo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Success",
+   "fieldname": "response_status",
+   "fieldtype": "Select",
+   "label": "Response Status",
+   "options": "Success\nFailure",
+   "read_only": 1
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-18 17:57:34.749339",
+ "modified": "2024-02-24 12:53:17.700219",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Webhook Log",

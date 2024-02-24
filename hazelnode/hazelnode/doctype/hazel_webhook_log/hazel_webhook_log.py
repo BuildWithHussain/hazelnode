@@ -16,6 +16,7 @@ class HazelWebhookLog(Document):
 
 		context: DF.Code | None
 		name: DF.Int | None
+		response_status: DF.Literal['Success', 'Failure']
 		webhook: DF.Link
 	# end: auto-generated types
 
