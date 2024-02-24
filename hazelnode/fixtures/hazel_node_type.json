@@ -1,5 +1,36 @@
 [
  {
+  "description": "Send an email",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.email_node.EmailNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-02-24 19:57:57.627821",
+  "name": "Email",
+  "params": [
+   {
+    "fieldname": "recipient",
+    "fieldtype": "Data",
+    "options": null,
+    "parent": "Email",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "Recipient"
+   },
+   {
+    "fieldname": "body",
+    "fieldtype": "Data",
+    "options": null,
+    "parent": "Email",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type",
+    "title": "Body"
+   }
+  ],
+  "preview_image": null
+ },
+ {
   "description": "Trigger a workflow on document lifecycle event.",
   "docstatus": 0,
   "doctype": "Hazel Node Type",
