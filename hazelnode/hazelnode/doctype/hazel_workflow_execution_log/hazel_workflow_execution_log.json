@@ -108,7 +108,7 @@
  ],
  "in_create": 1,
  "links": [],
- "modified": "2024-02-28 11:50:41.951354",
+ "modified": "2024-02-28 11:52:39.279648",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow Execution Log",
@@ -131,7 +131,16 @@
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
+ "states": [
+  {
+   "color": "Light Blue",
+   "title": "Running"
+  },
+  {
+   "color": "Red",
+   "title": "Failure"
+  }
+ ],
  "title_field": "workflow_title",
  "track_seen": 1
 }
