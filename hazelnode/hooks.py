@@ -18,6 +18,9 @@ fixtures = [
 	{'dt': 'Hazel Node Event Type', 'filters': {'is_standard': 1}},
 ]
 
+before_migrate = 'hazelnode.utils.cleanup_hazel_scheduled_events'
+after_migrate = 'hazelnode.utils.sync_hazel_scheduled_events'
+
 # Includes in <head>
 # ------------------
 
