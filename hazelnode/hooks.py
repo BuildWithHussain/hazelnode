@@ -21,8 +21,8 @@ fixtures = [
 ]
 
 # Hazel Scheduled Event Syncing
-before_migrate = 'hazelnode.utils.cleanup_hazel_scheduled_events'
-after_migrate = 'hazelnode.utils.sync_hazel_scheduled_events'
+before_migrate = 'hazelnode.install.before_migrate'
+after_migrate = 'hazelnode.install.after_migrate'
 
 # Let SPA handle frontend routing
 website_route_rules = [
