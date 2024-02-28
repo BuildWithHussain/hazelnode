@@ -8,7 +8,6 @@
   "section_break_prdk",
   "workflow",
   "workflow_title",
-  "amended_from",
   "column_break_zpxm",
   "status",
   "section_break_dbjb",
@@ -27,22 +26,13 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Hazel Workflow Execution Log",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
    "fieldname": "workflow",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Workflow",
    "options": "Hazel Workflow",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -55,13 +45,15 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Success\nFailure\nRunning"
+   "options": "Success\nFailure\nRunning",
+   "read_only": 1
   },
   {
    "fetch_from": "workflow.title",
    "fieldname": "workflow_title",
    "fieldtype": "Data",
-   "label": "Workflow Title"
+   "label": "Workflow Title",
+   "read_only": 1
   },
   {
    "depends_on": "eval:doc.status==\"Failure\"",
@@ -110,13 +102,13 @@
    "fieldname": "node_logs",
    "fieldtype": "Table",
    "label": "Node Logs",
-   "options": "Hazel Execution Node Log"
+   "options": "Hazel Execution Node Log",
+   "read_only": 1
   }
  ],
  "in_create": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2024-02-24 12:19:16.516992",
+ "modified": "2024-02-28 11:50:41.951354",
  "modified_by": "Administrator",
  "module": "Hazelnode",
  "name": "Hazel Workflow Execution Log",
@@ -133,7 +125,6 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],

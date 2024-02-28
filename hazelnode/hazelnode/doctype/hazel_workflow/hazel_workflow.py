@@ -76,9 +76,5 @@ class HazelWorkflow(Document):
 			execution_log.db_set('status', 'Failure')
 			# TODO: Later take traceback to node log level
 			execution_log.db_set('traceback', frappe.get_traceback())
-		finally:
-			execution_log.reload()
-			execution_log.submit()
-
 			if execution_log.status == 'Failure' and raise_exception:
 				raise

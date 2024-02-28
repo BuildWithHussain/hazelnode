@@ -15,8 +15,6 @@ export interface HazelWorkflowExecutionLog{
 	workflow: string
 	/**	Workflow Title : Data	*/
 	workflow_title?: string
-	/**	Amended From : Link - Hazel Workflow Execution Log	*/
-	amended_from?: string
 	/**	Status : Select	*/
 	status?: "Success" | "Failure" | "Running"
 	/**	Traceback : Code	*/
