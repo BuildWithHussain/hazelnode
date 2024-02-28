@@ -6,20 +6,40 @@ app_email = 'buildwithhussain@gmail.com'
 app_license = 'agpl-3.0'
 # required_apps = []
 
+# Generate type annotations
 export_python_type_annotations = True
 
-
+# Webhook Trigger Handler
 page_renderer = [
 	'hazelnode.nodes.triggers.hazel_webhook_handler.HazelWebhookHandler'
 ]
 
+# Out of the box nodes
 fixtures = [
 	{'dt': 'Hazel Node Type', 'filters': {'is_standard': 1}},
 	{'dt': 'Hazel Node Event Type', 'filters': {'is_standard': 1}},
 ]
 
+# Hazel Scheduled Event Syncing
 before_migrate = 'hazelnode.utils.cleanup_hazel_scheduled_events'
 after_migrate = 'hazelnode.utils.sync_hazel_scheduled_events'
+
+# Let SPA handle frontend routing
+website_route_rules = [
+	{
+		'from_route': '/hazelnode/<path:app_path>',
+		'to_route': 'hazelnode',
+	},
+]
+
+# For Document Event Handler Trigger
+doc_events = {
+	'*': {
+		'after_insert': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
+		'on_change': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
+		'after_delete': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
+	}
+}
 
 # Includes in <head>
 # ------------------
@@ -137,13 +157,6 @@ after_migrate = 'hazelnode.utils.sync_hazel_scheduled_events'
 # ---------------
 # Hook on document methods and events
 
-doc_events = {
-	'*': {
-		'after_insert': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
-		'on_change': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
-		'after_delete': 'hazelnode.nodes.triggers.hazel_document_event_handler.handle',
-	}
-}
 
 # Scheduled Tasks
 # ---------------
@@ -241,11 +254,3 @@ doc_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
-
-website_route_rules = [
-	{
-		'from_route': '/hazelnode/<path:app_path>',
-		'to_route': 'hazelnode',
-	},
-]
