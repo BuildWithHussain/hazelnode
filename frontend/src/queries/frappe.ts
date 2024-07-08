@@ -11,6 +11,7 @@ type DocTypeName =
   | 'Hazel Node'
   | 'Hazel Workflow'
   | 'Hazel Node Type'
+  | 'Hazel Node Param'
   | 'Hazel Workflow Execution Log';
 
 export interface DocTypeQueryParams<DT> {
@@ -57,6 +58,7 @@ export function getListQueryOptions<DT>(
         params: {
           ...params,
           fields: JSON.stringify(params.fields),
+          limit: 999
         },
       });
     },

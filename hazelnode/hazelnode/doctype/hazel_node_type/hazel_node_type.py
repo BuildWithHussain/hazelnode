@@ -15,14 +15,14 @@ class HazelNodeType(Document):
 		from frappe.types import DF
 
 		from hazelnode.hazelnode.doctype.hazel_node_param.hazel_node_param import (
-			HazelEventParam,
+			HazelNodeParam,
 		)
 
 		description: DF.SmallText | None
 		handler_path: DF.Data | None
 		is_standard: DF.Check
 		kind: DF.Literal['Trigger', 'Action']
-		params: DF.Table[HazelEventParam]
+		params: DF.Table[HazelNodeParam]
 		preview_image: DF.AttachImage | None
 	# end: auto-generated types
 

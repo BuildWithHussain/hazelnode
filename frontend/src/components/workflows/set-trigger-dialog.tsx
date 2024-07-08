@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogBody,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui/catalyst-dialog';
 import { type DialogProps as HeadlessDialogProps } from '@headlessui/react';
 
 import { Button } from '@/components/ui/button';

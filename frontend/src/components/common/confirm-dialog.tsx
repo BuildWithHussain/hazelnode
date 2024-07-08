@@ -4,7 +4,7 @@ import {
   DialogActions,
   DialogDescription,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui/catalyst-dialog';
 import { Button } from '@/components/ui/button';
 
 interface ConfirmOptions {

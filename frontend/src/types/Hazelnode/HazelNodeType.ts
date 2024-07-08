@@ -1,4 +1,4 @@
-import { HazelEventParam } from './HazelEventParam'
+import { HazelNodeParam } from './HazelNodeParam'
 
 export interface HazelNodeType{
 	name: string
@@ -21,6 +21,6 @@ export interface HazelNodeType{
 	handler_path?: string
 	/**	Is Standard? : Check	*/
 	is_standard?: 0 | 1
-	/**	Params : Table - Hazel Event Param	*/
-	params?: HazelEventParam[]
+	/**	Params : Table - Hazel Node Param	*/
+	params?: HazelNodeParam[]
 }

@@ -10,6 +10,16 @@ import { useConfirm } from '@/hooks/confirm';
 import { toast } from 'sonner';
 import { useEditorStore } from '@/stores/editor';
 import { EditorNodeData } from '../nodes/node';
+import { DocTypeAutoComplete } from '../common/doctype-autocomplete';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 
 interface TriggerConfig {
   [index: string]: string;
@@ -31,6 +41,7 @@ export function WorkflowConfigPanel({
 
   const { useDoc } = useDocType<HazelNodeType>('Hazel Node Type');
   const triggerDoc = useDoc(hazelWorkflow.trigger_type || '');
+  const actionDoc = useDoc(editorStore.selectedNode?.data.type || '')
 
   const navigate = useNavigate();
   const confirm = useConfirm();
@@ -152,7 +163,39 @@ export function WorkflowConfigPanel({
         return (
           <div key={param.name}>
             <Label htmlFor={param.fieldname}>{param.label}</Label>
-            <Input
+
+            {param.fieldtype === "Link" && <DocTypeAutoComplete
+             onChange={(v) =>
+              setTriggerFormState({
+                ...triggerFormState,
+                [param.fieldname]: v,
+              })}
+             doctype='DocType' />}
+
+            {param.fieldtype === "Select" &&
+              <Select
+                value={triggerFormState[param.fieldname]}
+                onValueChange={(v) =>
+                  setTriggerFormState({
+                    ...triggerFormState,
+                    [param.fieldname]: v,
+                  })
+                }
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Event" />
+                </SelectTrigger>
+                <SelectContent>
+                  {param.options?.split("\n").map((option) => {
+                    return <SelectItem value={option}>{ option }</SelectItem>
+                  })}
+
+
+                </SelectContent>
+            </Select>
+            }
+            {param.fieldtype === "Data" &&
+              <Input
               value={triggerFormState[param.fieldname]}
               onChange={(v) =>
                 setTriggerFormState({
@@ -163,9 +206,11 @@ export function WorkflowConfigPanel({
               type="text"
               name={param.fieldname}
             />
+            }
           </div>
         );
       })}
+
       <SetTriggerDialog
         open={updateTriggerDialogOpen}
         onClose={setUpdateTriggerDialogOpen}
@@ -202,8 +247,55 @@ export function WorkflowConfigPanel({
         </>
       )}
       <h2 className=" mt-4 text-xl font-bold text-gray-900">Action Settings</h2>
-      {editorStore.selectedNode?.data.type} - #
-      {editorStore.selectedNode?.data.name}
+      {editorStore.selectedNode?.data.type}
+
+      {actionDoc.data?.params?.map(param => {
+         return (
+          <div key={param.name}>
+            <Label htmlFor={param.fieldname}>{param.label}</Label>
+
+            {param.fieldtype === "Link" && <DocTypeAutoComplete
+             onChange={(v) =>
+              setTriggerFormState({
+                ...triggerFormState,
+                [param.fieldname]: v,
+              })}
+             doctype='DocType' />}
+
+            {param.fieldtype === "Select" &&
+              <Select
+                value={triggerFormState[param.fieldname]}
+                onValueChange={(v) =>
+                  setTriggerFormState({
+                    ...triggerFormState,
+                    [param.fieldname]: v,
+                  })
+                }
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Event" />
+                </SelectTrigger>
+                <SelectContent>
+                  {param.options?.split("\n").map((option) => {
+                    return <SelectItem value={option}>{ option }</SelectItem>
+                  })}
+
+
+                </SelectContent>
+            </Select>
+            }
+            {param.fieldtype === "Data" &&
+              <Input
+              value={triggerFormState[param.fieldname]}
+              onChange={(v) => false /** TODO: set this in backend */
+              }
+              type="text"
+              name={param.fieldname}
+            />
+            }
+          </div>
+        );
+      })}
     </ScrollArea>
   );
 }
