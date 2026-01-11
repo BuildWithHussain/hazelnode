@@ -2,6 +2,11 @@ import { Page, Locator, expect } from '@playwright/test';
 
 /**
  * Page Object for the Frappe login page.
+ *
+ * Frappe uses specific HTML structure for login:
+ * - Email input: input[type="text"] with autocomplete="username"
+ * - Password input: input[type="password"]
+ * - Submit button: .btn-login or button with "Login" text
  */
 export class LoginPage {
 	readonly page: Page;
@@ -12,10 +17,19 @@ export class LoginPage {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.emailInput = page.locator('input[data-fieldname="email"]');
-		this.passwordInput = page.locator('input[data-fieldname="password"]');
-		this.submitButton = page.locator('button[type="submit"]');
-		this.errorMessage = page.locator('.alert-danger, .msgprint');
+		// Frappe login page selectors - try multiple options for compatibility
+		this.emailInput = page.locator(
+			'input#login_email, input[autocomplete="username"], input[name="usr"]'
+		);
+		this.passwordInput = page.locator(
+			'input#login_password, input[type="password"]'
+		);
+		this.submitButton = page.locator(
+			'.btn-login, .btn-login-area button, button:has-text("Login")'
+		);
+		this.errorMessage = page.locator(
+			'.alert-danger, .msgprint, .login-content .alert'
+		);
 	}
 
 	/**
