@@ -1,4 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
+import * as fs from 'fs';
 
 /**
  * Frappe API response wrapper.
@@ -10,30 +11,34 @@ export interface FrappeResponse<T = unknown> {
 	_server_messages?: string;
 }
 
-// Cache CSRF token per request context
-const csrfTokenCache = new WeakMap<APIRequestContext, string>();
+// Path to CSRF token file saved by auth.setup.ts
+const CSRF_FILE = 'e2e/.auth/csrf.json';
+
+// Cache for CSRF token (read from file once)
+let csrfTokenCache: string | null = null;
 
 /**
- * Get CSRF token from Frappe.
- * Makes a request to get the token from cookies/response.
+ * Get CSRF token from the file saved during auth setup.
+ * The token is extracted from window.frappe.csrf_token after login.
  */
-async function getCsrfToken(request: APIRequestContext): Promise<string> {
-	// Check cache first
-	const cached = csrfTokenCache.get(request);
-	if (cached) {
-		return cached;
+function getCsrfToken(): string {
+	// Return cached token if available
+	if (csrfTokenCache !== null) {
+		return csrfTokenCache;
 	}
 
-	// Get CSRF token from Frappe's session info endpoint
-	const response = await request.get('/api/method/frappe.auth.get_csrf_token');
-
-	if (response.ok()) {
-		const data = await response.json();
-		const token = data.message || '';
-		csrfTokenCache.set(request, token);
-		return token;
+	// Read token from file
+	try {
+		if (fs.existsSync(CSRF_FILE)) {
+			const data = JSON.parse(fs.readFileSync(CSRF_FILE, 'utf-8'));
+			csrfTokenCache = data.csrf_token || '';
+			return csrfTokenCache;
+		}
+	} catch (error) {
+		console.warn('Failed to read CSRF token file:', error);
 	}
 
+	csrfTokenCache = '';
 	return '';
 }
 
@@ -45,7 +50,7 @@ export async function createDoc<T = Record<string, unknown>>(
 	doctype: string,
 	doc: Record<string, unknown>
 ): Promise<T> {
-	const csrfToken = await getCsrfToken(request);
+	const csrfToken = getCsrfToken();
 
 	const response = await request.post(`/api/resource/${doctype}`, {
 		data: doc,
@@ -94,7 +99,7 @@ export async function updateDoc<T = Record<string, unknown>>(
 	name: string,
 	updates: Record<string, unknown>
 ): Promise<T> {
-	const csrfToken = await getCsrfToken(request);
+	const csrfToken = getCsrfToken();
 
 	const response = await request.put(
 		`/api/resource/${doctype}/${encodeURIComponent(name)}`,
@@ -124,7 +129,7 @@ export async function deleteDoc(
 	doctype: string,
 	name: string
 ): Promise<void> {
-	const csrfToken = await getCsrfToken(request);
+	const csrfToken = getCsrfToken();
 
 	const response = await request.delete(
 		`/api/resource/${doctype}/${encodeURIComponent(name)}`,
@@ -149,7 +154,7 @@ export async function callMethod<T = unknown>(
 	method: string,
 	args: Record<string, unknown> = {}
 ): Promise<T> {
-	const csrfToken = await getCsrfToken(request);
+	const csrfToken = getCsrfToken();
 
 	const response = await request.post(`/api/method/${method}`, {
 		data: args,

@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const authFile = 'e2e/.auth/user.json';
+const csrfFile = 'e2e/.auth/csrf.json';
 
 /**
  * Authentication setup - runs once before all tests.
@@ -10,6 +11,7 @@ const authFile = 'e2e/.auth/user.json';
  * This follows Playwright's recommended "setup project" pattern:
  * - Authenticates via API using page.request (shares cookies with browser)
  * - Saves browser state (cookies) to file
+ * - Extracts and saves CSRF token for API calls
  * - Other tests reuse this state via storageState config
  *
  * @see https://playwright.dev/docs/auth
@@ -42,9 +44,24 @@ setup('authenticate', async ({ page }) => {
 
 	console.log(`✅ Authenticated as: ${userData.message}`);
 
-	// Navigate to app to ensure cookies are properly set in browser context
+	// Navigate to app to load frappe context and get CSRF token
 	await page.goto('/app');
 	await page.waitForLoadState('networkidle');
+
+	// Wait for frappe to initialize and extract CSRF token
+	const csrfToken = await page.evaluate(() => {
+		// Wait for frappe to be defined
+		return (window as unknown as { frappe?: { csrf_token?: string } }).frappe
+			?.csrf_token;
+	});
+
+	if (csrfToken) {
+		// Save CSRF token to file for API helpers to use
+		fs.writeFileSync(csrfFile, JSON.stringify({ csrf_token: csrfToken }));
+		console.log(`🔐 Saved CSRF token to ${csrfFile}`);
+	} else {
+		console.warn('⚠️ Could not extract CSRF token from page');
+	}
 
 	// Save authentication state
 	await page.context().storageState({ path: authFile });
