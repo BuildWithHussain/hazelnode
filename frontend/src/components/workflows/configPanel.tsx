@@ -14,8 +14,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { useConfirm } from '@/hooks/confirm';
 import { toast } from 'sonner';
 import { useEditorStore } from '@/stores/editor';
-import { EditorNodeData } from '../nodes/node';
 import { DocTypeAutoComplete } from '../common/doctype-autocomplete';
+import { nodesToHazelNodes, edgesToHazelConnections } from '@/utils/editor';
 
 import {
   Select,
@@ -37,6 +37,7 @@ export function WorkflowConfigPanel({
 }) {
   const editorStore = useEditorStore((state) => ({
     nodes: state.flowNodes,
+    edges: state.flowEdges,
     appendNode: state.appendNode,
     selectedNode: state.selectedNode,
   }));
@@ -110,10 +111,14 @@ export function WorkflowConfigPanel({
 
   async function handleSaveWorkflow() {
     const triggerConfig = JSON.stringify(triggerFormState);
+    const nodes = nodesToHazelNodes(editorStore.nodes);
+    const connections = edgesToHazelConnections(editorStore.edges);
 
     try {
       await updateDoc('Hazel Workflow', hazelWorkflow.name.toString(), {
         trigger_config: triggerConfig,
+        nodes: nodes as unknown as HazelNode[],
+        connections: connections as unknown as HazelNodeConnection[],
       });
       toast.success('Workflow Saved!');
     } catch {
@@ -121,30 +126,11 @@ export function WorkflowConfigPanel({
     }
   }
 
-  async function addAction(node: EditorNodeData) {
-    editorStore.appendNode(node);
-
-    const serializedNodes = [];
-    for (const flowNode of editorStore.nodes) {
-      const nodeData = flowNode.data as EditorNodeData;
-      serializedNodes.push({
-        type: nodeData.type,
-      });
-    }
-
-    serializedNodes.push({
-      type: node.type,
+  function addAction(nodeType: string) {
+    editorStore.appendNode({
+      type: nodeType,
+      kind: 'Action',
     });
-    // remove the first one, it is a trigger node
-    serializedNodes.splice(0, 1);
-
-    try {
-      await updateDoc('Hazel Workflow', hazelWorkflow.name.toString(), {
-        nodes: serializedNodes as unknown as HazelNode[],
-      });
-    } catch {
-      toast.error('Failed to add action');
-    }
   }
 
   return (
@@ -233,14 +219,8 @@ export function WorkflowConfigPanel({
             {actions?.map((node) => (
               <Button
                 key={node.name}
-                color="yellow"
-                onClick={() =>
-                  addAction({
-                    name: node.name,
-                    type: node.name,
-                    kind: 'Action',
-                  })
-                }
+                color={node.name === 'Condition' ? 'amber' : 'yellow'}
+                onClick={() => addAction(node.name)}
               >
                 {node.name}
               </Button>
