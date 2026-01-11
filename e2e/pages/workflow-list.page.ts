@@ -30,17 +30,12 @@ export class WorkflowListPage {
 		this.errorMessage = page.locator('text=Error loading workflows');
 
 		// Create dialog elements - HeadlessUI dialog panel
-		this.createDialog = page.locator('[role="dialog"]');
-		// Input may have id="title" or use a label
-		this.titleInput = page.locator(
-			'[role="dialog"] input#title, [role="dialog"] input[type="text"]'
-		);
-		this.createButton = page.locator(
-			'[role="dialog"] button:has-text("Create")'
-		);
-		this.cancelButton = page.locator(
-			'[role="dialog"] button:has-text("Cancel")'
-		);
+		// Use content-based selectors as HeadlessUI transitions can leave role="dialog" in DOM
+		this.createDialog = page.locator('text=Create new workflow');
+		// Input has id="title"
+		this.titleInput = page.locator('input#title');
+		this.createButton = page.locator('button:has-text("Create"):not(:has-text("Creating"))');
+		this.cancelButton = page.locator('button:has-text("Cancel")');
 	}
 
 	/**
@@ -79,10 +74,10 @@ export class WorkflowListPage {
 		await this.newWorkflowButton.waitFor({ state: 'visible', timeout: 10000 });
 		await expect(this.newWorkflowButton).toBeEnabled();
 		await this.newWorkflowButton.click();
-		// Wait for dialog with animation transition time
-		await this.createDialog.waitFor({ state: 'visible', timeout: 10000 });
+		// Wait for dialog title to appear (HeadlessUI transitions)
+		await this.createDialog.waitFor({ state: 'visible', timeout: 15000 });
 		// Wait for input to be visible and interactable
-		await this.titleInput.first().waitFor({ state: 'visible', timeout: 5000 });
+		await this.titleInput.waitFor({ state: 'visible', timeout: 5000 });
 	}
 
 	/**
@@ -90,8 +85,7 @@ export class WorkflowListPage {
 	 */
 	async createWorkflow(title: string): Promise<void> {
 		await this.openCreateDialog();
-		// Use first() in case the locator matches multiple elements
-		await this.titleInput.first().fill(title);
+		await this.titleInput.fill(title);
 		await this.createButton.click();
 		// Wait for navigation to editor page
 		await this.page.waitForURL(/.*workflow\/.*/, { timeout: 30000 });
@@ -102,7 +96,8 @@ export class WorkflowListPage {
 	 */
 	async closeCreateDialog(): Promise<void> {
 		await this.cancelButton.click();
-		await this.createDialog.waitFor({ state: 'hidden' });
+		// Wait for dialog title to disappear
+		await this.createDialog.waitFor({ state: 'hidden', timeout: 5000 });
 	}
 
 	/**

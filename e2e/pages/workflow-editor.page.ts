@@ -68,8 +68,11 @@ export class WorkflowEditorPage {
 	 * Wait for the editor to be ready.
 	 */
 	async waitForEditorReady(): Promise<void> {
-		await this.page.waitForLoadState('networkidle');
+		await this.page.waitForLoadState('domcontentloaded');
 		await this.canvas.waitFor({ state: 'visible', timeout: 30000 });
+		await this.page.waitForLoadState('networkidle');
+		// Wait for ReactFlow to initialize controls
+		await this.controls.waitFor({ state: 'visible', timeout: 15000 });
 	}
 
 	/**
@@ -94,10 +97,14 @@ export class WorkflowEditorPage {
 	}
 
 	/**
-	 * Get a draggable node from the palette by name.
+	 * Get a draggable node from the palette by exact name.
+	 * Uses the span containing the node name to be precise.
 	 */
 	getPaletteNode(nodeName: string): Locator {
-		return this.page.locator(`[draggable="true"]:has-text("${nodeName}")`);
+		// Match Card with draggable that contains a span with exact node name
+		return this.page.locator(
+			`[draggable="true"]:has(span.font-medium:text-is("${nodeName}"))`
+		);
 	}
 
 	/**
@@ -109,18 +116,16 @@ export class WorkflowEditorPage {
 		targetY: number
 	): Promise<void> {
 		const paletteNode = this.getPaletteNode(nodeName);
-		const canvasBounds = await this.canvas.boundingBox();
 
+		// Ensure palette node is visible
+		await paletteNode.waitFor({ state: 'visible', timeout: 10000 });
+
+		const canvasBounds = await this.canvas.boundingBox();
 		if (!canvasBounds) {
 			throw new Error('Canvas not found');
 		}
 
-		// Calculate target position relative to viewport
-		const targetPosition = {
-			x: canvasBounds.x + targetX,
-			y: canvasBounds.y + targetY,
-		};
-
+		// Drag to canvas at specified position
 		await paletteNode.dragTo(this.canvas, {
 			targetPosition: { x: targetX, y: targetY },
 		});
@@ -190,10 +195,20 @@ export class WorkflowEditorPage {
 	}
 
 	/**
+	 * Wait for ReactFlow controls to be ready.
+	 */
+	async waitForControlsReady(): Promise<void> {
+		await this.controls.waitFor({ state: 'visible', timeout: 10000 });
+	}
+
+	/**
 	 * Zoom in on the canvas.
 	 */
 	async zoomIn(): Promise<void> {
+		await this.waitForControlsReady();
 		const zoomInButton = this.controls.locator('button[title="zoom in"]');
+		await zoomInButton.waitFor({ state: 'visible', timeout: 5000 });
+		await expect(zoomInButton).toBeEnabled({ timeout: 5000 });
 		await zoomInButton.click();
 	}
 
@@ -201,7 +216,10 @@ export class WorkflowEditorPage {
 	 * Zoom out on the canvas.
 	 */
 	async zoomOut(): Promise<void> {
+		await this.waitForControlsReady();
 		const zoomOutButton = this.controls.locator('button[title="zoom out"]');
+		await zoomOutButton.waitFor({ state: 'visible', timeout: 5000 });
+		await expect(zoomOutButton).toBeEnabled({ timeout: 5000 });
 		await zoomOutButton.click();
 	}
 
@@ -209,7 +227,10 @@ export class WorkflowEditorPage {
 	 * Fit the view to show all nodes.
 	 */
 	async fitView(): Promise<void> {
+		await this.waitForControlsReady();
 		const fitButton = this.controls.locator('button[title="fit view"]');
+		await fitButton.waitFor({ state: 'visible', timeout: 5000 });
+		await expect(fitButton).toBeEnabled({ timeout: 5000 });
 		await fitButton.click();
 	}
 
