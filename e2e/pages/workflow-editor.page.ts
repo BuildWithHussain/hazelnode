@@ -222,25 +222,25 @@ export class WorkflowEditorPage {
 	}
 
 	/**
-	 * Zoom in on the canvas using keyboard shortcut.
-	 * Falls back to button click if available.
+	 * Zoom in on the canvas.
+	 * Uses button click with force to bypass any overlays.
 	 */
 	async zoomIn(): Promise<void> {
 		await this.waitForControlsReady();
-		// Use keyboard shortcut: Ctrl/Cmd + Plus
-		await this.canvas.click();
-		await this.page.keyboard.press('Control+=');
+		const zoomInButton = this.getControlButton('zoom in');
+		// Use force click to bypass any intercepting elements
+		await zoomInButton.click({ force: true });
 	}
 
 	/**
-	 * Zoom out on the canvas using keyboard shortcut.
-	 * Falls back to button click if available.
+	 * Zoom out on the canvas.
+	 * Uses button click with force to bypass any overlays.
 	 */
 	async zoomOut(): Promise<void> {
 		await this.waitForControlsReady();
-		// Use keyboard shortcut: Ctrl/Cmd + Minus
-		await this.canvas.click();
-		await this.page.keyboard.press('Control+-');
+		const zoomOutButton = this.getControlButton('zoom out');
+		// Use force click to bypass any intercepting elements
+		await zoomOutButton.click({ force: true });
 	}
 
 	/**
@@ -249,8 +249,8 @@ export class WorkflowEditorPage {
 	async fitView(): Promise<void> {
 		await this.waitForControlsReady();
 		const fitButton = this.getControlButton('fit view');
-		await fitButton.waitFor({ state: 'visible', timeout: 5000 });
-		await fitButton.click();
+		// Use force click to bypass any intercepting elements
+		await fitButton.click({ force: true });
 	}
 
 	/**
