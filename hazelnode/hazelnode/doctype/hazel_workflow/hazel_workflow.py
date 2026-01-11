@@ -67,7 +67,9 @@ class HazelWorkflow(Document):
 		# Find the node connected from trigger
 		trigger_connections = self.get_outgoing_connections('trigger')
 		if trigger_connections:
-			return self.get_node_by_id(trigger_connections[0].target_node_id)
+			return self.get_node_by_id(
+				trigger_connections[0].target_node_id
+			)
 		# Fallback to first node in array for backward compatibility
 		return self.nodes[0] if self.nodes else None
 
@@ -113,10 +115,14 @@ class HazelWorkflow(Document):
 
 		while current_node and current_node.node_id not in visited:
 			visited.add(current_node.node_id)
-			result = self._execute_node(current_node, context, execution_log)
+			result = self._execute_node(
+				current_node, context, execution_log
+			)
 
 			# Determine next node based on result
-			next_node_id = self._get_next_node_id(current_node, result)
+			next_node_id = self._get_next_node_id(
+				current_node, result
+			)
 			if next_node_id:
 				current_node = self.get_node_by_id(next_node_id)
 				context = result
