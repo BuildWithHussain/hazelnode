@@ -1,5 +1,6 @@
 import frappe
 from hazelnode.nodes import Node
+from hazelnode.nodes.utils import render_template_field, ensure_context
 
 
 class LogNode(Node):
@@ -9,14 +10,11 @@ class LogNode(Node):
     """
 
     def execute(self, event=None, params=None, context=None):
-        context = context or {}
+        context = ensure_context(context)
+        params = params or {}
 
-        message = params.get('message', '')
+        message = render_template_field(params.get('message', ''), context)
         log_level = params.get('log_level', 'Info')
-
-        # Render template variables in message
-        if isinstance(message, str) and '{{' in message:
-            message = frappe.render_template(message, context)
 
         # Log to console
         if log_level == 'Error':

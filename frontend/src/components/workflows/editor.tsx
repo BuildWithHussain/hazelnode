@@ -16,11 +16,13 @@ import ConditionNode from '@/components/nodes/condition-node';
 import { useEditorStore } from '@/stores/editor';
 import { AddTriggerNode } from '@/components/nodes/add-trigger-node';
 import { getProcessedNodes, getProcessedEdges } from '@/utils/editor';
-
-interface DragData {
-  nodeType: string;
-  kind: 'Action' | 'Trigger';
-}
+import {
+  NODE_TYPES,
+  DRAG_DATA_TYPE,
+  getEdgeStyleForHandle,
+  createEdgeId,
+  type DragData,
+} from '@/constants/editor';
 
 export default function WorkflowEditor({
   hazelWorkflow,
@@ -33,11 +35,11 @@ export default function WorkflowEditor({
   // Registering custom node types
   const nodeTypes = useMemo(
     () => ({
-      workflowNode: WorkflowNode,
-      conditionNode: ConditionNode,
-      setTriggerButton: AddTriggerNode,
+      [NODE_TYPES.WORKFLOW]: WorkflowNode,
+      [NODE_TYPES.CONDITION]: ConditionNode,
+      [NODE_TYPES.SET_TRIGGER]: AddTriggerNode,
     }),
-    [],
+    []
   );
 
   const editorStore = useEditorStore((state) => ({
@@ -58,19 +60,22 @@ export default function WorkflowEditor({
 
   const onConnect = useCallback(
     (connection: Connection) => {
+      const styleProps = getEdgeStyleForHandle(connection.sourceHandle);
       const newEdge = {
         ...connection,
-        id: `${connection.source}-${connection.sourceHandle || 'default'}-${connection.target}`,
+        id: createEdgeId(
+          connection.source!,
+          connection.sourceHandle,
+          connection.target!
+        ),
         markerEnd: { type: MarkerType.ArrowClosed },
-        label: connection.sourceHandle === 'true' ? 'Yes' : connection.sourceHandle === 'false' ? 'No' : undefined,
-        labelStyle: { fill: '#666', fontWeight: 500 },
-        style: {
-          stroke: connection.sourceHandle === 'true' ? '#22c55e' : connection.sourceHandle === 'false' ? '#ef4444' : '#888',
-        },
+        label: styleProps.label,
+        labelStyle: styleProps.labelStyle,
+        style: { stroke: styleProps.stroke },
       };
       editorStore.setEdges(addEdge(newEdge, editorStore.edges));
     },
-    [editorStore.edges],
+    [editorStore.edges]
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -83,7 +88,7 @@ export default function WorkflowEditor({
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
-      const dataStr = event.dataTransfer.getData('application/reactflow');
+      const dataStr = event.dataTransfer.getData(DRAG_DATA_TYPE);
 
       if (!dataStr || !reactFlowBounds || !reactFlowInstance.current) {
         return;
@@ -117,7 +122,7 @@ export default function WorkflowEditor({
 
   return (
     <div ref={reactFlowWrapper} className="h-full w-full">
-    <ReactFlow
+      <ReactFlow
         className="h-full w-full"
         nodes={editorStore.nodes}
         edges={editorStore.edges}

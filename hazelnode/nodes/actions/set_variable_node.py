@@ -1,4 +1,5 @@
 from hazelnode.nodes import Node
+from hazelnode.nodes.utils import render_template_field, ensure_context
 
 
 class SetVariableNode(Node):
@@ -8,15 +9,11 @@ class SetVariableNode(Node):
     """
 
     def execute(self, event=None, params=None, context=None):
-        context = context or {}
+        context = ensure_context(context)
+        params = params or {}
 
         variable_name = params.get('variable_name', '')
-        value = params.get('value', '')
-
-        # Support for simple template expressions like {{doc.name}}
-        if isinstance(value, str) and '{{' in value:
-            import frappe
-            value = frappe.render_template(value, context)
+        value = render_template_field(params.get('value', ''), context)
 
         if variable_name:
             context[variable_name] = value

@@ -1,22 +1,28 @@
 import { type EditorNodeData } from '@/components/nodes/node';
 import type { Edge, Node } from 'reactflow';
+import {
+  SPECIAL_NODE_IDS,
+  NODE_TYPES,
+  EDGE_HANDLES,
+  getEdgeStyleForHandle,
+  createEdgeId,
+  getNodeTypeForData,
+} from '@/constants/editor';
 
-const TRIGGER_NODE_ID = 'trigger';
+const DEFAULT_X = 300;
+const STEP_Y = 150;
 
 export function getProcessedNodes(hazelWorkflow: HazelWorkflow): Array<Node> {
   const processedNodes: Array<Node<EditorNodeData | null>> = [];
-
-  const defaultX = 300;
   let currentY = 100;
-  const stepY = 150;
 
   // To allow user to set a trigger if not already done
   if (!hazelWorkflow.trigger_type) {
     processedNodes.push({
-      id: 'set-trigger',
-      position: { x: defaultX, y: currentY },
+      id: SPECIAL_NODE_IDS.SET_TRIGGER,
+      position: { x: DEFAULT_X, y: currentY },
       data: null,
-      type: 'setTriggerButton',
+      type: NODE_TYPES.SET_TRIGGER,
       draggable: false,
       focusable: true,
     });
@@ -25,25 +31,25 @@ export function getProcessedNodes(hazelWorkflow: HazelWorkflow): Array<Node> {
 
   // Add trigger node
   processedNodes.push({
-    id: TRIGGER_NODE_ID,
-    position: { x: defaultX, y: currentY },
+    id: SPECIAL_NODE_IDS.TRIGGER,
+    position: { x: DEFAULT_X, y: currentY },
     data: {
-      node_id: TRIGGER_NODE_ID,
+      node_id: SPECIAL_NODE_IDS.TRIGGER,
       name: hazelWorkflow.trigger_type,
       type: hazelWorkflow.trigger_type,
       kind: 'Trigger',
     },
-    type: 'workflowNode',
+    type: NODE_TYPES.WORKFLOW,
     draggable: false,
     focusable: false,
   });
 
-  currentY += stepY;
+  currentY += STEP_Y;
 
   // Add action nodes
   for (const node of hazelWorkflow.nodes || []) {
     const nodeId = node.node_id || node.name;
-    const posX = node.position_x || defaultX;
+    const posX = node.position_x || DEFAULT_X;
     const posY = node.position_y || currentY;
 
     processedNodes.push({
@@ -56,12 +62,12 @@ export function getProcessedNodes(hazelWorkflow: HazelWorkflow): Array<Node> {
         kind: node.kind || 'Action',
         parameters: node.parameters,
       },
-      type: node.type === 'Condition' ? 'conditionNode' : 'workflowNode',
+      type: getNodeTypeForData(node.type),
       focusable: true,
       draggable: true,
     });
 
-    currentY = posY + stepY;
+    currentY = posY + STEP_Y;
   }
 
   return processedNodes;
@@ -76,16 +82,17 @@ export function getProcessedEdges(
   // If we have connections from backend, use them
   if (hazelWorkflow.connections && hazelWorkflow.connections.length > 0) {
     for (const conn of hazelWorkflow.connections) {
+      const handle = conn.source_handle || EDGE_HANDLES.DEFAULT;
+      const styleProps = getEdgeStyleForHandle(handle);
+
       processedEdges.push({
-        id: `${conn.source_node_id}-${conn.source_handle || 'default'}-${conn.target_node_id}`,
+        id: createEdgeId(conn.source_node_id, handle, conn.target_node_id),
         source: conn.source_node_id,
         target: conn.target_node_id,
-        sourceHandle: conn.source_handle || 'default',
-        label: conn.source_handle === 'true' ? 'Yes' : conn.source_handle === 'false' ? 'No' : undefined,
-        labelStyle: { fill: '#666', fontWeight: 500 },
-        style: {
-          stroke: conn.source_handle === 'true' ? '#22c55e' : conn.source_handle === 'false' ? '#ef4444' : '#888',
-        },
+        sourceHandle: handle,
+        label: styleProps.label,
+        labelStyle: styleProps.labelStyle,
+        style: { stroke: styleProps.stroke },
       });
     }
     return processedEdges;
@@ -97,22 +104,27 @@ export function getProcessedEdges(
     const targetNode = processedNodes[i + 1];
 
     // Skip set-trigger button
-    if (sourceNode.id === 'set-trigger' || targetNode.id === 'set-trigger') {
+    if (
+      sourceNode.id === SPECIAL_NODE_IDS.SET_TRIGGER ||
+      targetNode.id === SPECIAL_NODE_IDS.SET_TRIGGER
+    ) {
       continue;
     }
 
     processedEdges.push({
-      id: `${sourceNode.id}-default-${targetNode.id}`,
+      id: createEdgeId(sourceNode.id, EDGE_HANDLES.DEFAULT, targetNode.id),
       source: sourceNode.id,
       target: targetNode.id,
-      sourceHandle: 'default',
+      sourceHandle: EDGE_HANDLES.DEFAULT,
     });
   }
 
   return processedEdges;
 }
 
-export function nodesToHazelNodes(nodes: Array<Node>): Array<Partial<HazelNode>> {
+export function nodesToHazelNodes(
+  nodes: Array<Node>
+): Array<Partial<HazelNode>> {
   return nodes
     .filter((node) => node.data?.kind === 'Action')
     .map((node) => ({
@@ -124,10 +136,13 @@ export function nodesToHazelNodes(nodes: Array<Node>): Array<Partial<HazelNode>>
     }));
 }
 
-export function edgesToHazelConnections(edges: Array<Edge>): Array<Partial<HazelNodeConnection>> {
+export function edgesToHazelConnections(
+  edges: Array<Edge>
+): Array<Partial<HazelNodeConnection>> {
   return edges.map((edge) => ({
     source_node_id: edge.source,
-    source_handle: (edge.sourceHandle as 'default' | 'true' | 'false') || 'default',
+    source_handle:
+      (edge.sourceHandle as 'default' | 'true' | 'false') || 'default',
     target_node_id: edge.target,
   }));
 }

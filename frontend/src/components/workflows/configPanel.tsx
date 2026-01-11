@@ -3,8 +3,6 @@ import {
   useFrappeUpdateDoc,
   useFrappeDeleteDoc,
 } from 'frappe-react-sdk';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SetTriggerDialog from '@/components/workflows/set-trigger-dialog';
@@ -13,21 +11,10 @@ import { useNavigate } from '@tanstack/react-router';
 import { useConfirm } from '@/hooks/confirm';
 import { toast } from 'sonner';
 import { useEditorStore } from '@/stores/editor';
-import { DocTypeAutoComplete } from '../common/doctype-autocomplete';
 import { nodesToHazelNodes, edgesToHazelConnections } from '@/utils/editor';
+import { ParamForm } from '@/components/common/param-field';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-
-interface TriggerConfig {
-  [index: string]: string;
-}
+type FormState = Record<string, string>;
 
 export function WorkflowConfigPanel({
   hazelWorkflow,
@@ -56,29 +43,54 @@ export function WorkflowConfigPanel({
     }
   );
 
-  
   const { updateDoc } = useFrappeUpdateDoc<HazelWorkflow>();
   const { deleteDoc } = useFrappeDeleteDoc();
 
   const navigate = useNavigate();
   const confirm = useConfirm();
 
-  const [triggerFormState, setTriggerFormState] = useState<TriggerConfig>({});
+  const [triggerFormState, setTriggerFormState] = useState<FormState>({});
+  const [actionFormState, setActionFormState] = useState<FormState>({});
   const [updateTriggerDialogOpen, setUpdateTriggerDialogOpen] = useState(false);
 
+  // Initialize trigger form state
   useEffect(() => {
-    const initTriggerFormState: TriggerConfig = {};
-    const initConfig = hazelWorkflow.trigger_config
+    const initState: FormState = {};
+    const savedConfig = hazelWorkflow.trigger_config
       ? JSON.parse(hazelWorkflow.trigger_config)
       : {};
 
     if (triggerDoc) {
       for (const param of triggerDoc.params || []) {
-        initTriggerFormState[param.fieldname] = initConfig[param.fieldname];
+        initState[param.fieldname] = savedConfig[param.fieldname] || '';
       }
     }
-    setTriggerFormState(initTriggerFormState);
+    setTriggerFormState(initState);
   }, [triggerDoc, hazelWorkflow]);
+
+  // Initialize action form state when selected node changes
+  useEffect(() => {
+    const initState: FormState = {};
+    const savedParams = editorStore.selectedNode?.data?.parameters;
+
+    if (actionDoc && savedParams) {
+      for (const param of actionDoc.params || []) {
+        const savedParam = Array.isArray(savedParams)
+          ? savedParams.find((p: { fieldname: string }) => p.fieldname === param.fieldname)
+          : null;
+        initState[param.fieldname] = savedParam?.value || '';
+      }
+    }
+    setActionFormState(initState);
+  }, [actionDoc, editorStore.selectedNode]);
+
+  const handleTriggerFieldChange = (fieldname: string, value: string) => {
+    setTriggerFormState((prev) => ({ ...prev, [fieldname]: value }));
+  };
+
+  const handleActionFieldChange = (fieldname: string, value: string) => {
+    setActionFormState((prev) => ({ ...prev, [fieldname]: value }));
+  };
 
   async function handleDeleteWorkflow() {
     const deleteConfirmed = await confirm({
@@ -117,135 +129,70 @@ export function WorkflowConfigPanel({
     }
   }
 
-  
   return (
-    <ScrollArea  className="h-full p-3">
-      <strong>{hazelWorkflow.title}</strong>
-      <ul>
-        {hazelWorkflow.trigger_type && (
-          <li>
-            Trigger: {hazelWorkflow.trigger_type}
+    <ScrollArea className="h-full p-3">
+      <h2 className="text-lg font-semibold mb-3">{hazelWorkflow.title}</h2>
+
+      {/* Trigger Section */}
+      {hazelWorkflow.trigger_type && (
+        <section className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-600">
+              Trigger: <strong>{hazelWorkflow.trigger_type}</strong>
+            </span>
             <Button
               onClick={() => setUpdateTriggerDialogOpen(true)}
               outline={true}
+              className="text-xs"
             >
               Change
             </Button>
-          </li>
-        )}
-      </ul>
-      {(triggerDoc?.params || []).map((param) => {
-        return (
-          <div key={param.name}>
-            <Label htmlFor={param.fieldname}>{param.label}</Label>
-
-            {param.fieldtype === "Link" && <DocTypeAutoComplete
-             onChange={(v) =>
-              setTriggerFormState({
-                ...triggerFormState,
-                [param.fieldname]: v,
-              })}
-             doctype='DocType' />}
-
-            {param.fieldtype === "Select" &&
-              <Select
-                value={triggerFormState[param.fieldname]}
-                onValueChange={(v) =>
-                  setTriggerFormState({
-                    ...triggerFormState,
-                    [param.fieldname]: v,
-                  })
-                }
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Event" />
-                </SelectTrigger>
-                <SelectContent>
-                  {param.options?.split("\n").map((option) => {
-                    return <SelectItem value={option}>{ option }</SelectItem>
-                  })}
-
-
-                </SelectContent>
-            </Select>
-            }
-            {param.fieldtype === "Data" &&
-              <Input
-              value={triggerFormState[param.fieldname]}
-              onChange={(v) =>
-                setTriggerFormState({
-                  ...triggerFormState,
-                  [param.fieldname]: v.target.value,
-                })
-              }
-              type="text"
-              name={param.fieldname}
-            />
-            }
           </div>
-        );
-      })}
+
+          {triggerDoc?.params && triggerDoc.params.length > 0 && (
+            <ParamForm
+              params={triggerDoc.params}
+              values={triggerFormState}
+              onChange={handleTriggerFieldChange}
+            />
+          )}
+        </section>
+      )}
 
       <SetTriggerDialog
         open={updateTriggerDialogOpen}
         onClose={setUpdateTriggerDialogOpen}
       />
-      <Button color="white" onClick={handleSaveWorkflow}>
-        Save
-      </Button>
-      <br />
-      <Button color="rose" onClick={handleDeleteWorkflow}>
-        Delete Workflow
-      </Button>
-            <h2 className=" mt-4 text-xl font-bold text-gray-900">Action Settings</h2>
-      {editorStore.selectedNode?.data.type}
 
-      {actionDoc?.params?.map(param => {
-         return (
-          <div key={param.name}>
-            <Label htmlFor={param.fieldname}>{param.label}</Label>
+      {/* Action Buttons */}
+      <div className="flex gap-2 mb-4">
+        <Button color="white" onClick={handleSaveWorkflow}>
+          Save
+        </Button>
+        <Button color="rose" onClick={handleDeleteWorkflow}>
+          Delete
+        </Button>
+      </div>
 
-            {param.fieldtype === "Link" && <DocTypeAutoComplete
-             onChange={(v) =>
-              setTriggerFormState({
-                ...triggerFormState,
-                [param.fieldname]: v,
-              })}
-             doctype='DocType' />}
+      {/* Action Settings Section */}
+      {editorStore.selectedNode && (
+        <section className="border-t pt-4">
+          <h3 className="text-md font-semibold text-gray-900 mb-2">
+            Action Settings
+          </h3>
+          <p className="text-sm text-gray-600 mb-3">
+            {editorStore.selectedNode.data.type}
+          </p>
 
-            {param.fieldtype === "Select" &&
-              <Select
-                value={triggerFormState[param.fieldname]}
-                onValueChange={(v) =>
-                  setTriggerFormState({
-                    ...triggerFormState,
-                    [param.fieldname]: v,
-                  })
-                }
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Event" />
-                </SelectTrigger>
-                <SelectContent>
-                  {param.options?.split("\n").map((option) => {
-                    return <SelectItem value={option}>{ option }</SelectItem>
-                  })}
-
-
-                </SelectContent>
-            </Select>
-            }
-            {param.fieldtype === "Data" &&
-              <Input
-              value={triggerFormState[param.fieldname]}
-              onChange={() => { /* TODO: set this in backend */ }}
-              type="text"
-              name={param.fieldname}
+          {actionDoc?.params && actionDoc.params.length > 0 && (
+            <ParamForm
+              params={actionDoc.params}
+              values={actionFormState}
+              onChange={handleActionFieldChange}
             />
-            }
-          </div>
-        );
-      })}
+          )}
+        </section>
+      )}
     </ScrollArea>
   );
 }

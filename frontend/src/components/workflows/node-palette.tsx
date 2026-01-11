@@ -3,11 +3,11 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-
-interface DragData {
-  nodeType: string;
-  kind: 'Action' | 'Trigger';
-}
+import {
+  CONDITION_NODE_TYPE,
+  DRAG_DATA_TYPE,
+  type DragData,
+} from '@/constants/editor';
 
 export function NodePalette() {
   const { data: nodeTypes, isLoading } = useFrappeGetDocList<HazelNodeType>(
@@ -24,7 +24,7 @@ export function NodePalette() {
     kind: 'Action' | 'Trigger'
   ) => {
     const data: DragData = { nodeType, kind };
-    event.dataTransfer.setData('application/reactflow', JSON.stringify(data));
+    event.dataTransfer.setData(DRAG_DATA_TYPE, JSON.stringify(data));
     event.dataTransfer.effectAllowed = 'move';
   };
 
@@ -38,8 +38,10 @@ export function NodePalette() {
     );
   }
 
-  const conditionNodes = nodeTypes?.filter((n) => n.name === 'Condition') || [];
-  const actionNodes = nodeTypes?.filter((n) => n.name !== 'Condition') || [];
+  const conditionNodes =
+    nodeTypes?.filter((n) => n.name === CONDITION_NODE_TYPE) || [];
+  const actionNodes =
+    nodeTypes?.filter((n) => n.name !== CONDITION_NODE_TYPE) || [];
 
   return (
     <ScrollArea className="h-full">
@@ -120,7 +122,7 @@ function PaletteNode({
       <div className="flex items-center gap-2">
         <span className="font-medium text-sm">{name}</span>
         <Badge color={color} className="text-xs">
-          {name === 'Condition' ? 'Logic' : kind}
+          {name === CONDITION_NODE_TYPE ? 'Logic' : kind}
         </Badge>
       </div>
       {description && (

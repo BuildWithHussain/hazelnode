@@ -4,6 +4,11 @@ import { MarkerType } from 'reactflow';
 import type { NodeChange, EdgeChange, Node, Edge } from 'reactflow';
 import { applyNodeChanges, applyEdgeChanges } from 'reactflow';
 import { EditorNodeData } from '@/components/nodes/node';
+import {
+  EDGE_HANDLES,
+  createEdgeId,
+  getNodeTypeForData,
+} from '@/constants/editor';
 
 interface WorkflowEditorState {
   flowNodes: Array<Node>;
@@ -37,6 +42,32 @@ const initialState: WorkflowEditorState = {
   selectedNode: null,
   nodeCounter: 0,
 };
+
+const DEFAULT_X = 300;
+const NODE_SPACING_Y = 150;
+
+/**
+ * Create a new ReactFlow node from editor node data
+ */
+function createFlowNode(
+  nodeId: string,
+  nodeData: Partial<EditorNodeData>,
+  position: { x: number; y: number }
+): Node<EditorNodeData> {
+  return {
+    id: nodeId,
+    position,
+    data: {
+      node_id: nodeId,
+      name: nodeData.name || nodeData.type || '',
+      type: nodeData.type || '',
+      kind: nodeData.kind || 'Action',
+      parameters: nodeData.parameters,
+    },
+    type: getNodeTypeForData(nodeData.type),
+    draggable: true,
+  };
+}
 
 export const useEditorStore = create<
   WorkflowEditorState & WorkflowEditorActions
@@ -98,43 +129,27 @@ export const useEditorStore = create<
   },
 
   appendNode(nodeData) {
-    const currentState = get();
-    const currentNodes = currentState.flowNodes;
-    const currentEdges = currentState.flowEdges;
-
+    const { flowNodes: currentNodes, flowEdges: currentEdges } = get();
     const nodeId = get().generateNodeId();
-    const isCondition = nodeData.type === 'Condition';
 
     // Calculate position based on last node
     let posY = 100;
     if (currentNodes.length > 0) {
       const lastNode = currentNodes[currentNodes.length - 1];
-      posY = lastNode.position.y + 150;
+      posY = lastNode.position.y + NODE_SPACING_Y;
     }
 
-    const newNode: Node<EditorNodeData> = {
-      id: nodeId,
-      position: { x: 300, y: posY },
-      data: {
-        node_id: nodeId,
-        name: nodeData.name || nodeData.type || '',
-        type: nodeData.type || '',
-        kind: nodeData.kind || 'Action',
-        parameters: nodeData.parameters,
-      },
-      type: isCondition ? 'conditionNode' : 'workflowNode',
-      draggable: true,
-    };
+    const newNode = createFlowNode(nodeId, nodeData, { x: DEFAULT_X, y: posY });
 
     // Connect to the last node if not empty
     const newEdges = [...currentEdges];
     if (currentNodes.length > 0) {
       const lastNode = currentNodes[currentNodes.length - 1];
       newEdges.push({
-        id: `${lastNode.id}-default-${nodeId}`,
+        id: createEdgeId(lastNode.id, EDGE_HANDLES.DEFAULT, nodeId),
         source: lastNode.id,
         target: nodeId,
-        sourceHandle: 'default',
+        sourceHandle: EDGE_HANDLES.DEFAULT,
         markerEnd: { type: MarkerType.ArrowClosed },
       });
     }
@@ -148,21 +163,7 @@ export const useEditorStore = create<
   addNodeAtPosition(nodeData, position) {
     const currentNodes = get().flowNodes;
     const nodeId = get().generateNodeId();
-    const isCondition = nodeData.type === 'Condition';
-
-    const newNode: Node<EditorNodeData> = {
-      id: nodeId,
-      position,
-      data: {
-        node_id: nodeId,
-        name: nodeData.name || nodeData.type || '',
-        type: nodeData.type || '',
-        kind: nodeData.kind || 'Action',
-        parameters: nodeData.parameters,
-      },
-      type: isCondition ? 'conditionNode' : 'workflowNode',
-      draggable: true,
-    };
+    const newNode = createFlowNode(nodeId, nodeData, position);
 
     set({
       flowNodes: [...currentNodes, newNode],
