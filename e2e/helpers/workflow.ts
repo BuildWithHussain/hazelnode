@@ -3,46 +3,56 @@ import { createDoc, deleteDoc, getDoc, docExists } from './frappe';
 
 /**
  * Hazel Workflow document interface.
+ * Based on hazelnode/doctype/hazel_workflow/hazel_workflow.json
  */
 export interface HazelWorkflow {
 	name: string;
 	title: string;
 	description?: string;
-	is_active?: boolean;
+	enabled?: number; // Frappe Check field: 0 or 1
+	trigger_type?: string; // Link to Hazel Node Type
+	trigger_config?: string; // JSON
 	nodes?: HazelNode[];
 	connections?: HazelConnection[];
 }
 
 /**
  * Hazel Node interface.
+ * Based on hazelnode/doctype/hazel_node/hazel_node.json
  */
 export interface HazelNode {
 	node_id: string;
-	node_type: string;
+	type: string; // Link to Hazel Node Type
 	position_x: number;
 	position_y: number;
-	params?: Record<string, unknown>;
+	parameters?: string; // JSON string
 }
 
 /**
  * Hazel Connection interface.
+ * Based on hazelnode/doctype/hazel_node_connection/hazel_node_connection.json
  */
 export interface HazelConnection {
-	source_node: string;
+	source_node_id: string;
 	source_handle?: string;
-	target_node: string;
+	target_node_id: string;
 	target_handle?: string;
 }
 
 /**
  * Create a test workflow via API.
  * Returns the workflow name (docname).
+ *
+ * Note: If nodes are provided, trigger_type must also be set
+ * per hazel_workflow.py validation.
  */
 export async function createTestWorkflow(
 	request: APIRequestContext,
 	title: string,
 	options: {
 		description?: string;
+		trigger_type?: string;
+		trigger_config?: Record<string, unknown>;
 		nodes?: HazelNode[];
 		connections?: HazelConnection[];
 	} = {}
@@ -50,6 +60,10 @@ export async function createTestWorkflow(
 	const doc = await createDoc<HazelWorkflow>(request, 'Hazel Workflow', {
 		title,
 		description: options.description || `Test workflow: ${title}`,
+		trigger_type: options.trigger_type,
+		trigger_config: options.trigger_config
+			? JSON.stringify(options.trigger_config)
+			: undefined,
 		nodes: options.nodes || [],
 		connections: options.connections || [],
 	});
@@ -80,57 +94,65 @@ export async function getWorkflow(
 }
 
 /**
- * Create a simple webhook trigger workflow.
+ * Create a workflow with Schedule Event trigger (no action nodes).
+ * This is the simplest valid workflow for testing.
  */
-export async function createWebhookWorkflow(
+export async function createScheduleWorkflow(
 	request: APIRequestContext,
 	title: string
 ): Promise<string> {
 	return createTestWorkflow(request, title, {
+		trigger_type: 'Schedule Event',
+		trigger_config: { cron: '0 0 * * *' },
+	});
+}
+
+/**
+ * Create a workflow with Schedule Event trigger and Log action.
+ */
+export async function createScheduleLogWorkflow(
+	request: APIRequestContext,
+	title: string
+): Promise<string> {
+	return createTestWorkflow(request, title, {
+		trigger_type: 'Schedule Event',
+		trigger_config: { cron: '0 0 * * *' },
 		nodes: [
 			{
-				node_id: 'node_1_webhook',
-				node_type: 'Webhook',
-				position_x: 100,
+				node_id: 'node_1_log',
+				type: 'Log',
+				position_x: 350,
 				position_y: 200,
+				parameters: JSON.stringify({ message: 'Test log message' }),
+			},
+		],
+		connections: [
+			{
+				source_node_id: 'trigger',
+				source_handle: 'default',
+				target_node_id: 'node_1_log',
+				target_handle: 'default',
 			},
 		],
 	});
 }
 
 /**
- * Create a workflow with webhook trigger and log action.
+ * Create a workflow with Document Event trigger.
  */
-export async function createWebhookLogWorkflow(
+export async function createDocumentEventWorkflow(
 	request: APIRequestContext,
 	title: string
 ): Promise<string> {
 	return createTestWorkflow(request, title, {
-		nodes: [
-			{
-				node_id: 'node_1_webhook',
-				node_type: 'Webhook',
-				position_x: 100,
-				position_y: 200,
-			},
-			{
-				node_id: 'node_2_log',
-				node_type: 'Log',
-				position_x: 350,
-				position_y: 200,
-				params: {
-					message: 'Test log message',
-				},
-			},
-		],
-		connections: [
-			{
-				source_node: 'node_1_webhook',
-				target_node: 'node_2_log',
-			},
-		],
+		trigger_type: 'Document Event',
+		trigger_config: { doctype: 'User', event: 'on_update' },
 	});
 }
+
+// Legacy aliases for backward compatibility
+export const createWebhookWorkflow = createScheduleWorkflow;
+export const createWebhookLogWorkflow = createScheduleLogWorkflow;
 
 /**
  * Generate a unique workflow title for tests.

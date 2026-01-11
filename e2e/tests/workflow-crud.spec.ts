@@ -94,14 +94,14 @@ test.describe('Workflow CRUD Operations', () => {
 
 			// Verify state changed via API
 			const workflow = await getWorkflow(request, workflowName);
-			// Initial state should be 0/false, after toggle should be 1/true
-			expect(workflow.is_active).toBeTruthy();
+			// Initial state should be 0, after toggle should be 1
+			expect(workflow.enabled).toBe(1);
 
 			// Toggle back
 			await listPage.toggleWorkflowEnabled(workflowTitle);
 
 			const updatedWorkflow = await getWorkflow(request, workflowName);
-			expect(updatedWorkflow.is_active).toBeFalsy();
+			expect(updatedWorkflow.enabled).toBe(0);
 		} finally {
 			// Cleanup
 			await deleteTestWorkflow(request, workflowName);
