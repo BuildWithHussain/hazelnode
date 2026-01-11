@@ -97,5 +97,54 @@
    }
   ],
   "preview_image": null
+ },
+ {
+  "description": "Conditional branching based on a comparison",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.condition_node.ConditionNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 07:04:21.138714",
+  "name": "Condition",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "left_operand",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Left Operand",
+    "options": null,
+    "parent": "Condition",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "operator",
+    "fieldtype": "Select",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Operator",
+    "options": "equals\nnot_equals\ngreater_than\nless_than\ngreater_than_or_equal\nless_than_or_equal\ncontains\nnot_contains\nstarts_with\nends_with\nis_empty\nis_not_empty",
+    "parent": "Condition",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "right_operand",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 0,
+    "label": "Right Operand",
+    "options": null,
+    "parent": "Condition",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
  }
 ]
