@@ -73,9 +73,10 @@ export default function WorkflowEditor({
         labelStyle: styleProps.labelStyle,
         style: { stroke: styleProps.stroke },
       };
-      editorStore.setEdges(addEdge(newEdge, editorStore.edges));
+      // Use functional updater to avoid stale closure
+      editorStore.setEdges((prevEdges) => addEdge(newEdge, prevEdges));
     },
-    [editorStore.edges]
+    [editorStore.setEdges]
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {

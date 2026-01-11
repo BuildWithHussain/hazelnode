@@ -32,6 +32,9 @@ class ConditionNode(Node):
 		'is_not_empty': lambda a, _: bool(a),
 	}
 
+	# Operators that don't require a right operand
+	UNARY_OPERATORS = {'is_empty', 'is_not_empty'}
+
 	def execute(self, event=None, params=None, context=None):
 		if params is None:
 			params = {}
@@ -41,6 +44,16 @@ class ConditionNode(Node):
 		left_operand = params.get('left_operand', '')
 		op = params.get('operator', 'equals')
 		right_operand = params.get('right_operand', '')
+
+		# Validate binary operators have right_operand
+		is_binary = op not in self.UNARY_OPERATORS
+		if is_binary and not right_operand:
+			return {
+				'branch': 'false',
+				'condition_result': False,
+				'error': f"Binary operator '{op}' requires a right operand",
+				'context': context,
+			}
 
 		# Resolve variables from context
 		left_value = self._resolve_value(left_operand, context)
@@ -65,7 +78,7 @@ class ConditionNode(Node):
 				'operator': op,
 				'right': right_value,
 			},
-			**context,  # Pass through the original context
+			'context': context,  # Nest context to avoid key collision
 		}
 
 	def _resolve_value(self, value, context):

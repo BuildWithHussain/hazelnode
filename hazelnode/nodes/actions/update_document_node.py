@@ -26,6 +26,11 @@ class UpdateDocumentNode(Node):
         # Render template variables in docname
         docname = render_template_field(docname, context)
 
+        # Check permissions before updating document
+        ignore_permissions = params.get('ignore_permissions', False)
+        if not ignore_permissions and not frappe.has_permission(doctype, 'write'):
+            frappe.throw(f'No permission to update {doctype}')
+
         field_values = parse_json_field(
             params.get('field_values', '{}'),
             context,
@@ -35,7 +40,7 @@ class UpdateDocumentNode(Node):
         doc = frappe.get_doc(doctype, docname)
         for field, value in field_values.items():
             setattr(doc, field, value)
-        doc.save(ignore_permissions=True)
+        doc.save(ignore_permissions=ignore_permissions)
 
         context['updated_doc'] = doc.as_dict()
 

@@ -22,9 +22,28 @@ interface DocTypeRecord {
   name: string;
 }
 
-export function DocTypeAutoComplete({ doctype, onChange }: { doctype: string, onChange: (value: string) => void }) {
+interface DocTypeAutoCompleteProps {
+  doctype: string;
+  onChange: (value: string) => void;
+  value?: string;
+  disabled?: boolean;
+}
+
+export function DocTypeAutoComplete({
+  doctype,
+  onChange,
+  value: controlledValue,
+  disabled = false,
+}: DocTypeAutoCompleteProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
+  const [internalValue, setInternalValue] = React.useState('');
+
+  // Use controlled value if provided, otherwise use internal state
+  const value = controlledValue ?? internalValue;
+  const setValue = (newValue: string) => {
+    setInternalValue(newValue);
+    onChange(newValue);
+  };
 
   const { data: documents } = useFrappeGetDocList<DocTypeRecord>(
     doctype,
@@ -40,6 +59,7 @@ export function DocTypeAutoComplete({ doctype, onChange }: { doctype: string, on
           outline={true}
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className="w-[200px] justify-between"
         >
           {value
@@ -60,9 +80,9 @@ export function DocTypeAutoComplete({ doctype, onChange }: { doctype: string, on
                     key={doc.name}
                     value={doc.name}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? '' : currentValue);
+                      const newValue = currentValue === value ? '' : currentValue;
+                      setValue(newValue);
                       setOpen(false);
-                      onChange(currentValue);
                     }}
                   >
                     {doc.name}

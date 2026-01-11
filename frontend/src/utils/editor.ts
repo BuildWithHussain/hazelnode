@@ -49,8 +49,8 @@ export function getProcessedNodes(hazelWorkflow: HazelWorkflow): Array<Node> {
   // Add action nodes
   for (const node of hazelWorkflow.nodes || []) {
     const nodeId = node.node_id || node.name;
-    const posX = node.position_x || DEFAULT_X;
-    const posY = node.position_y || currentY;
+    const posX = node.position_x ?? DEFAULT_X;
+    const posY = node.position_y ?? currentY;
 
     processedNodes.push({
       id: nodeId,
@@ -136,13 +136,22 @@ export function nodesToHazelNodes(
     }));
 }
 
+const VALID_HANDLES = ['default', 'true', 'false'] as const;
+type ValidHandle = (typeof VALID_HANDLES)[number];
+
+function sanitizeHandle(handle: string | null | undefined): ValidHandle {
+  if (handle && VALID_HANDLES.includes(handle as ValidHandle)) {
+    return handle as ValidHandle;
+  }
+  return 'default';
+}
+
 export function edgesToHazelConnections(
   edges: Array<Edge>
 ): Array<Partial<HazelNodeConnection>> {
   return edges.map((edge) => ({
     source_node_id: edge.source,
-    source_handle:
-      (edge.sourceHandle as 'default' | 'true' | 'false') || 'default',
+    source_handle: sanitizeHandle(edge.sourceHandle),
     target_node_id: edge.target,
   }));
 }

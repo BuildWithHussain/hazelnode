@@ -14,6 +14,11 @@ class CreateDocumentNode(Node):
         if not doctype:
             frappe.throw('DocType is required to create a document')
 
+        # Check permissions before creating document
+        ignore_permissions = params.get('ignore_permissions', False)
+        if not ignore_permissions and not frappe.has_permission(doctype, 'create'):
+            frappe.throw(f'No permission to create {doctype}')
+
         field_values = parse_json_field(
             params.get('field_values', '{}'),
             context,
@@ -24,7 +29,7 @@ class CreateDocumentNode(Node):
             'doctype': doctype,
             **field_values
         })
-        doc.insert(ignore_permissions=True)
+        doc.insert(ignore_permissions=ignore_permissions)
 
         context['created_doc'] = doc.as_dict()
         context['created_doc_name'] = doc.name

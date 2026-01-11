@@ -20,7 +20,9 @@ interface WorkflowEditorState {
 
 interface WorkflowEditorActions {
   setFlowNodes: (nodes: Array<Node>) => void;
-  setFlowEdges: (edges: Array<Edge>) => void;
+  setFlowEdges: (
+    edges: Array<Edge> | ((prevEdges: Array<Edge>) => Array<Edge>)
+  ) => void;
   onFlowNodesChange: (changes: NodeChange[]) => void;
   onFlowEdgesChange: (changes: EdgeChange[]) => void;
   isFlowEmpty: () => boolean;
@@ -31,6 +33,7 @@ interface WorkflowEditorActions {
     node: Partial<EditorNodeData>,
     position: { x: number; y: number }
   ) => void;
+  updateNodeData: (nodeId: string, data: Partial<EditorNodeData>) => void;
   resetFlows: () => void;
   generateNodeId: () => string;
 }
@@ -93,8 +96,12 @@ export const useEditorStore = create<
     set({ flowNodes: nodes });
   },
 
-  setFlowEdges(edges) {
-    set({ flowEdges: edges });
+  setFlowEdges(edgesOrUpdater) {
+    if (typeof edgesOrUpdater === 'function') {
+      set({ flowEdges: edgesOrUpdater(get().flowEdges) });
+    } else {
+      set({ flowEdges: edgesOrUpdater });
+    }
   },
 
   onFlowNodesChange(changes) {
@@ -122,9 +129,12 @@ export const useEditorStore = create<
     const currentEdges = get().flowEdges.filter(
       (e) => e.source !== nodeId && e.target !== nodeId
     );
+    const selectedNode = get().selectedNode;
     set({
       flowNodes: currentNodes,
       flowEdges: currentEdges,
+      // Clear selectedNode if it's the one being removed
+      selectedNode: selectedNode?.id === nodeId ? null : selectedNode,
     });
   },
 
@@ -167,6 +177,33 @@ export const useEditorStore = create<
 
     set({
       flowNodes: [...currentNodes, newNode],
+    });
+  },
+
+  updateNodeData(nodeId, data) {
+    const currentNodes = get().flowNodes;
+    const updatedNodes = currentNodes.map((node) => {
+      if (node.id === nodeId) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            ...data,
+          },
+        };
+      }
+      return node;
+    });
+
+    const selectedNode = get().selectedNode;
+    const updatedSelectedNode =
+      selectedNode?.id === nodeId
+        ? { ...selectedNode, data: { ...selectedNode.data, ...data } }
+        : selectedNode;
+
+    set({
+      flowNodes: updatedNodes,
+      selectedNode: updatedSelectedNode,
     });
   },
 }));

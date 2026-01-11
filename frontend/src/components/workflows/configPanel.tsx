@@ -25,11 +25,12 @@ export function WorkflowConfigPanel({
     nodes: state.flowNodes,
     edges: state.flowEdges,
     selectedNode: state.selectedNode,
+    updateNodeData: state.updateNodeData,
   }));
 
   const { data: triggerDoc } = useFrappeGetDoc<HazelNodeType>(
     'Hazel Node Type',
-    hazelWorkflow.trigger_type || '',
+    hazelWorkflow.trigger_type || undefined,
     {
       revalidateOnFocus: false,
     }
@@ -37,7 +38,7 @@ export function WorkflowConfigPanel({
 
   const { data: actionDoc } = useFrappeGetDoc<HazelNodeType>(
     'Hazel Node Type',
-    editorStore.selectedNode?.data.type || '',
+    editorStore.selectedNode?.data.type || undefined,
     {
       revalidateOnFocus: false,
     }
@@ -56,9 +57,15 @@ export function WorkflowConfigPanel({
   // Initialize trigger form state
   useEffect(() => {
     const initState: FormState = {};
-    const savedConfig = hazelWorkflow.trigger_config
-      ? JSON.parse(hazelWorkflow.trigger_config)
-      : {};
+    let savedConfig: Record<string, string> = {};
+
+    if (hazelWorkflow.trigger_config) {
+      try {
+        savedConfig = JSON.parse(hazelWorkflow.trigger_config);
+      } catch {
+        console.error('Failed to parse trigger_config JSON');
+      }
+    }
 
     if (triggerDoc) {
       for (const param of triggerDoc.params || []) {
@@ -73,10 +80,12 @@ export function WorkflowConfigPanel({
     const initState: FormState = {};
     const savedParams = editorStore.selectedNode?.data?.parameters;
 
-    if (actionDoc && savedParams) {
+    if (actionDoc) {
       for (const param of actionDoc.params || []) {
         const savedParam = Array.isArray(savedParams)
-          ? savedParams.find((p: { fieldname: string }) => p.fieldname === param.fieldname)
+          ? savedParams.find(
+              (p: { fieldname: string }) => p.fieldname === param.fieldname
+            )
           : null;
         initState[param.fieldname] = savedParam?.value || '';
       }
@@ -89,7 +98,20 @@ export function WorkflowConfigPanel({
   };
 
   const handleActionFieldChange = (fieldname: string, value: string) => {
-    setActionFormState((prev) => ({ ...prev, [fieldname]: value }));
+    setActionFormState((prev) => {
+      const newState = { ...prev, [fieldname]: value };
+
+      // Persist to editor store immediately
+      if (editorStore.selectedNode) {
+        const parameters = Object.entries(newState).map(([fn, val]) => ({
+          fieldname: fn,
+          value: val,
+        }));
+        editorStore.updateNodeData(editorStore.selectedNode.id, { parameters });
+      }
+
+      return newState;
+    });
   };
 
   async function handleDeleteWorkflow() {

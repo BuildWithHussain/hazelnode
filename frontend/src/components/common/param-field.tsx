@@ -34,6 +34,7 @@ export function ParamField({
         <DocTypeAutoComplete
           onChange={handleChange}
           doctype={param.options || 'DocType'}
+          value={value || undefined}
           disabled={disabled}
         />
       )}
