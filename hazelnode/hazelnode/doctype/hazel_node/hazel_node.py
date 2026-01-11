@@ -18,10 +18,13 @@ class HazelNode(Document):
 
 		event: DF.Link | None
 		kind: DF.Literal['Trigger', 'Action']
+		node_id: DF.Data
 		parameters: DF.JSON | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		position_x: DF.Int
+		position_y: DF.Int
 		type: DF.Link
 	# end: auto-generated types
 

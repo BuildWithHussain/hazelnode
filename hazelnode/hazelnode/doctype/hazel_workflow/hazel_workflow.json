@@ -12,7 +12,9 @@
   "column_break_prrb",
   "trigger_config",
   "section_break_jlvd",
-  "nodes"
+  "nodes",
+  "section_break_connections",
+  "connections"
  ],
  "fields": [
   {
@@ -30,13 +32,25 @@
   },
   {
    "fieldname": "section_break_jlvd",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Nodes"
   },
   {
    "fieldname": "nodes",
    "fieldtype": "Table",
    "label": "Nodes",
    "options": "Hazel Node"
+  },
+  {
+   "fieldname": "section_break_connections",
+   "fieldtype": "Section Break",
+   "label": "Connections"
+  },
+  {
+   "fieldname": "connections",
+   "fieldtype": "Table",
+   "label": "Connections",
+   "options": "Hazel Node Connection"
   },
   {
    "fieldname": "trigger_section",

@@ -2,6 +2,7 @@ export {};
 
 import type { HazelWorkflow as DocTypeWorkflow } from '@/types/Hazelnode/HazelWorkflow';
 import type { HazelNode as DocTypeHazelNode } from '@/types/Hazelnode/HazelNode';
+import type { HazelNodeConnection as DocTypeHazelNodeConnection } from '@/types/Hazelnode/HazelNodeConnection';
 import type { HazelWorkflowExecutionLog as DocTypeHazelWorkflowExecutionLog } from '@/types/Hazelnode/HazelWorkflowExecutionLog';
 import type { HazelNodeType as DocTypeHazelNodeType } from '@/types/Hazelnode/HazelNodeType';
 import type { HazelNodeEventType as DocTypeHazelNodeEventType } from './types/Hazelnode/HazelNodeEventType';
@@ -10,6 +11,7 @@ import type { HazelEventParam as DocTypeHazelEventParam } from './types/Hazelnod
 declare global {
   type HazelWorkflow = DocTypeWorkflow;
   type HazelNode = DocTypeHazelNode;
+  type HazelNodeConnection = DocTypeHazelNodeConnection;
   type HazelWorkflowExecutionLog = DocTypeHazelWorkflowExecutionLog;
   type HazelNodeType = DocTypeHazelNodeType;
   type HazelNodeEventType = DocTypeHazelNodeEventType;

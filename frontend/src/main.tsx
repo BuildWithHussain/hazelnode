@@ -1,21 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { FrappeProvider } from 'frappe-react-sdk';
 
 import { routeTree } from './routeTree.gen';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getSessionUserId } from '@/data/session';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ConfirmDialogProvider } from './components/common/confirm-dialog';
-
-const queryClient = new QueryClient();
 
 const router = createRouter({
   basepath: '/hazelnode',
   routeTree,
   defaultPreloadStaleTime: 0,
   context: {
-    queryClient,
     sessionUser: getSessionUserId(),
   },
   defaultErrorComponent: () => (
@@ -37,10 +34,10 @@ declare module '@tanstack/react-router' {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <FrappeProvider>
       <ConfirmDialogProvider>
         <RouterProvider router={router} />
       </ConfirmDialogProvider>
-    </QueryClientProvider>
+    </FrappeProvider>
   </React.StrictMode>,
 );

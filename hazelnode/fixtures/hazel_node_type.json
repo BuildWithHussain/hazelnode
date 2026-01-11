@@ -97,5 +97,239 @@
    }
   ],
   "preview_image": null
+ },
+ {
+  "description": "Conditional branching based on a comparison",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.condition_node.ConditionNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 07:04:21.138714",
+  "name": "Condition",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "left_operand",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Left Operand",
+    "options": null,
+    "parent": "Condition",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "operator",
+    "fieldtype": "Select",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Operator",
+    "options": "equals\nnot_equals\ngreater_than\nless_than\ngreater_than_or_equal\nless_than_or_equal\ncontains\nnot_contains\nstarts_with\nends_with\nis_empty\nis_not_empty",
+    "parent": "Condition",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "right_operand",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 0,
+    "label": "Right Operand",
+    "options": null,
+    "parent": "Condition",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": "Set a variable in the workflow context",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.set_variable_node.SetVariableNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 08:00:00.000000",
+  "name": "Set Variable",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "variable_name",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Variable Name",
+    "options": null,
+    "parent": "Set Variable",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "value",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 0,
+    "label": "Value",
+    "options": null,
+    "parent": "Set Variable",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": "Create a new document in the system",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.create_document_node.CreateDocumentNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 08:00:00.000000",
+  "name": "Create Document",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "doctype",
+    "fieldtype": "Link",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "DocType",
+    "options": "DocType",
+    "parent": "Create Document",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "field_values",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 0,
+    "label": "Field Values (JSON)",
+    "options": null,
+    "parent": "Create Document",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": "Update an existing document",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.update_document_node.UpdateDocumentNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 08:00:00.000000",
+  "name": "Update Document",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "doctype",
+    "fieldtype": "Link",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "DocType",
+    "options": "DocType",
+    "parent": "Update Document",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "docname",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Document Name",
+    "options": null,
+    "parent": "Update Document",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "field_values",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 0,
+    "label": "Field Values (JSON)",
+    "options": null,
+    "parent": "Update Document",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": "Log a message to the workflow execution log",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.log_node.LogNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 08:00:00.000000",
+  "name": "Log",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "message",
+    "fieldtype": "Data",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Message",
+    "options": null,
+    "parent": "Log",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   },
+   {
+    "event": null,
+    "fieldname": "log_level",
+    "fieldtype": "Select",
+    "is_computed": 0,
+    "is_mandatory": 0,
+    "label": "Log Level",
+    "options": "Info\nWarning\nError",
+    "parent": "Log",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
+ },
+ {
+  "description": "Pause workflow execution for a specified duration",
+  "docstatus": 0,
+  "doctype": "Hazel Node Type",
+  "handler_path": "hazelnode.nodes.actions.delay_node.DelayNode",
+  "is_standard": 1,
+  "kind": "Action",
+  "modified": "2024-04-23 08:00:00.000000",
+  "name": "Delay",
+  "params": [
+   {
+    "event": null,
+    "fieldname": "delay_seconds",
+    "fieldtype": "Int",
+    "is_computed": 0,
+    "is_mandatory": 1,
+    "label": "Delay (seconds)",
+    "options": null,
+    "parent": "Delay",
+    "parentfield": "params",
+    "parenttype": "Hazel Node Type"
+   }
+  ],
+  "preview_image": null
  }
 ]

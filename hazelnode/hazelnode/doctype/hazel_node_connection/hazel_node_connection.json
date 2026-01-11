@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "creation": "2024-01-22 19:22:49.868220",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "source_node_id",
+  "source_handle",
+  "column_break_conn",
+  "target_node_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "source_node_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Source Node ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_handle",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Source Handle",
+   "options": "default\ntrue\nfalse",
+   "default": "default",
+   "description": "Which output handle this connection comes from (for conditional nodes)"
+  },
+  {
+   "fieldname": "column_break_conn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "target_node_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target Node ID",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-01-22 19:22:49.868220",
+ "modified_by": "Administrator",
+ "module": "Hazelnode",
+ "name": "Hazel Node Connection",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
