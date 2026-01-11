@@ -4,14 +4,26 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "node_id",
   "type",
   "kind",
   "column_break_vkxd",
   "event",
+  "section_break_position",
+  "position_x",
+  "position_y",
   "section_break_zdtn",
   "parameters"
  ],
  "fields": [
+  {
+   "fieldname": "node_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Node ID",
+   "reqd": 1,
+   "description": "Unique identifier for this node within the workflow"
+  },
   {
    "fieldname": "type",
    "fieldtype": "Link",
@@ -23,6 +35,23 @@
   {
    "fieldname": "column_break_vkxd",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_position",
+   "fieldtype": "Section Break",
+   "label": "Position"
+  },
+  {
+   "default": "0",
+   "fieldname": "position_x",
+   "fieldtype": "Int",
+   "label": "Position X"
+  },
+  {
+   "default": "0",
+   "fieldname": "position_y",
+   "fieldtype": "Int",
+   "label": "Position Y"
   },
   {
    "fieldname": "section_break_zdtn",

@@ -1,4 +1,5 @@
 import { HazelNode } from './HazelNode'
+import { HazelNodeConnection } from './HazelNodeConnection'
 
 export interface HazelWorkflow{
 	name: number
@@ -21,4 +22,6 @@ export interface HazelWorkflow{
 	trigger_config?: any
 	/**	Nodes : Table - Hazel Node	*/
 	nodes?: HazelNode[]
+	/**	Connections : Table - Hazel Node Connection	*/
+	connections?: HazelNodeConnection[]
 }
