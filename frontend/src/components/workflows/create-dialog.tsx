@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { useFrappeCreateDoc } from 'frappe-react-sdk';
 
 import {
   Dialog,
@@ -14,8 +15,6 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { type DialogProps as HeadlessDialogProps } from '@headlessui/react';
 
-import { useCreateDocMutation } from '@/queries/frappe';
-
 export default function CreateWorkflowDialog({
   open,
   onClose,
@@ -27,32 +26,30 @@ export default function CreateWorkflowDialog({
   const [workflowTitle, setWorkflowTitle] = useState('');
   const navigate = useNavigate();
 
-  const createWorkflowMutation =
-    useCreateDocMutation<HazelWorkflow>('Hazel Workflow');
+  const { createDoc, loading } = useFrappeCreateDoc();
 
-  function handleCreateWorkflow() {
+  async function handleCreateWorkflow() {
     if (!workflowTitle) {
-      // TODO: Show error in form itself
       toast.warning('Title is required!');
+      return;
     }
-    createWorkflowMutation.mutate(
-      {
+
+    try {
+      const doc = await createDoc('Hazel Workflow', {
         title: workflowTitle,
-      },
-      {
-        onSuccess: (doc) => {
-          setWorkflowTitle('');
-          toast.success('🚀 New workflow created!');
-          onClose(false);
-          navigate({
-            to: '/workflow/$id',
-            params: {
-              id: doc.name.toString(),
-            },
-          });
+      });
+      setWorkflowTitle('');
+      toast.success('New workflow created!');
+      onClose(false);
+      navigate({
+        to: '/workflow/$id',
+        params: {
+          id: String(doc.name),
         },
-      },
-    );
+      });
+    } catch {
+      toast.error('Failed to create workflow');
+    }
   }
 
   return (
@@ -76,8 +73,8 @@ export default function CreateWorkflowDialog({
         <Button outline onClick={() => onClose(false)}>
           Cancel
         </Button>
-        <Button color="lime" onClick={handleCreateWorkflow}>
-          Create
+        <Button color="lime" onClick={handleCreateWorkflow} disabled={loading}>
+          {loading ? 'Creating...' : 'Create'}
         </Button>
       </DialogActions>
     </Dialog>

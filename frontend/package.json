@@ -29,6 +29,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
+    "frappe-react-sdk": "^1.13.0",
     "lucide-react": "^0.319.0",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",

@@ -1,9 +1,14 @@
+import {
+  useFrappeGetDoc,
+  useFrappeGetDocList,
+  useFrappeUpdateDoc,
+  useFrappeDeleteDoc,
+} from 'frappe-react-sdk';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SetTriggerDialog from '@/components/workflows/set-trigger-dialog';
-import { useDocType } from '@/queries/frappe';
 import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useConfirm } from '@/hooks/confirm';
@@ -36,42 +41,52 @@ export function WorkflowConfigPanel({
     selectedNode: state.selectedNode,
   }));
 
-  const { useDeleteDocMutation, useSetValueMutation } =
-    useDocType<HazelWorkflow>('Hazel Workflow');
+  const { data: triggerDoc } = useFrappeGetDoc<HazelNodeType>(
+    'Hazel Node Type',
+    hazelWorkflow.trigger_type || '',
+    {
+      revalidateOnFocus: false,
+    }
+  );
 
-  const { useDoc } = useDocType<HazelNodeType>('Hazel Node Type');
-  const triggerDoc = useDoc(hazelWorkflow.trigger_type || '');
-  const actionDoc = useDoc(editorStore.selectedNode?.data.type || '')
+  const { data: actionDoc } = useFrappeGetDoc<HazelNodeType>(
+    'Hazel Node Type',
+    editorStore.selectedNode?.data.type || '',
+    {
+      revalidateOnFocus: false,
+    }
+  );
+
+  const { data: actions } = useFrappeGetDocList<HazelNodeType>(
+    'Hazel Node Type',
+    {
+      fields: ['name', 'description'],
+      filters: [['kind', '=', 'Action']],
+    }
+  );
+
+  const { updateDoc } = useFrappeUpdateDoc<HazelWorkflow>();
+  const { deleteDoc } = useFrappeDeleteDoc();
 
   const navigate = useNavigate();
   const confirm = useConfirm();
 
   const [triggerFormState, setTriggerFormState] = useState<TriggerConfig>({});
+  const [updateTriggerDialogOpen, setUpdateTriggerDialogOpen] = useState(false);
 
   useEffect(() => {
     const initTriggerFormState: TriggerConfig = {};
+    const initConfig = hazelWorkflow.trigger_config
+      ? JSON.parse(hazelWorkflow.trigger_config)
+      : {};
 
-    const initConfig = JSON.parse(hazelWorkflow.trigger_config);
-
-    if (triggerDoc.data) {
-      for (const param of triggerDoc.data?.params || []) {
+    if (triggerDoc) {
+      for (const param of triggerDoc.params || []) {
         initTriggerFormState[param.fieldname] = initConfig[param.fieldname];
       }
     }
     setTriggerFormState(initTriggerFormState);
-  }, [triggerDoc.data, hazelWorkflow]);
-
-  const deleteWorkflowMutation = useDeleteDocMutation();
-  const setValueWorkflowMutation = useSetValueMutation();
-  const { useList } = useDocType<HazelNodeType>('Hazel Node Type');
-  const [updateTriggerDialogOpen, setUpdateTriggerDialogOpen] = useState(false);
-
-  const actionsList = useList({
-    fields: ['name', 'description'],
-    filters: {
-      kind: 'Action',
-    },
-  });
+  }, [triggerDoc, hazelWorkflow]);
 
   async function handleDeleteWorkflow() {
     const deleteConfirmed = await confirm({
@@ -84,46 +99,34 @@ export function WorkflowConfigPanel({
       return;
     }
 
-    deleteWorkflowMutation.mutate(
-      {
-        name: hazelWorkflow.name,
-      },
-      {
-        onSuccess: () => {
-          navigate({
-            to: '/',
-          });
-          toast.success('🗑️ Workflow deleted!');
-        },
-      },
-    );
+    try {
+      await deleteDoc('Hazel Workflow', hazelWorkflow.name.toString());
+      navigate({ to: '/' });
+      toast.success('Workflow deleted!');
+    } catch {
+      toast.error('Failed to delete workflow');
+    }
   }
 
   async function handleSaveWorkflow() {
     const triggerConfig = JSON.stringify(triggerFormState);
 
-    setValueWorkflowMutation.mutate(
-      {
-        name: hazelWorkflow.name,
-        values: {
-          trigger_config: triggerConfig,
-        },
-      },
-      {
-        onSuccess() {
-          toast.success('Workflow Saved!');
-        },
-      },
-    );
+    try {
+      await updateDoc('Hazel Workflow', hazelWorkflow.name.toString(), {
+        trigger_config: triggerConfig,
+      });
+      toast.success('Workflow Saved!');
+    } catch {
+      toast.error('Failed to save workflow');
+    }
   }
 
-  function addAction(node: EditorNodeData) {
+  async function addAction(node: EditorNodeData) {
     editorStore.appendNode(node);
 
     const serializedNodes = [];
-    for (const node of editorStore.nodes) {
-      const nodeData = node.data as EditorNodeData;
-
+    for (const flowNode of editorStore.nodes) {
+      const nodeData = flowNode.data as EditorNodeData;
       serializedNodes.push({
         type: nodeData.type,
       });
@@ -135,12 +138,13 @@ export function WorkflowConfigPanel({
     // remove the first one, it is a trigger node
     serializedNodes.splice(0, 1);
 
-    setValueWorkflowMutation.mutate({
-      name: hazelWorkflow.name,
-      values: {
-        nodes: serializedNodes as HazelNode[],
-      },
-    });
+    try {
+      await updateDoc('Hazel Workflow', hazelWorkflow.name.toString(), {
+        nodes: serializedNodes as unknown as HazelNode[],
+      });
+    } catch {
+      toast.error('Failed to add action');
+    }
   }
 
   return (
@@ -159,7 +163,7 @@ export function WorkflowConfigPanel({
           </li>
         )}
       </ul>
-      {(triggerDoc.data?.params || []).map((param) => {
+      {(triggerDoc?.params || []).map((param) => {
         return (
           <div key={param.name}>
             <Label htmlFor={param.fieldname}>{param.label}</Label>
@@ -226,30 +230,28 @@ export function WorkflowConfigPanel({
         <>
           <h2 className=" mt-4 text-xl font-bold text-gray-900">Actions</h2>
           <div className="mt-1 flex flex-col gap-2">
-            {actionsList.data?.map((node) => {
-              return (
-                <Button
-                  key={node.name}
-                  color="yellow"
-                  onClick={() =>
-                    addAction({
-                      name: node.name,
-                      type: node.name,
-                      kind: 'Action',
-                    })
-                  }
-                >
-                  {node.name}
-                </Button>
-              );
-            })}
+            {actions?.map((node) => (
+              <Button
+                key={node.name}
+                color="yellow"
+                onClick={() =>
+                  addAction({
+                    name: node.name,
+                    type: node.name,
+                    kind: 'Action',
+                  })
+                }
+              >
+                {node.name}
+              </Button>
+            ))}
           </div>
         </>
       )}
       <h2 className=" mt-4 text-xl font-bold text-gray-900">Action Settings</h2>
       {editorStore.selectedNode?.data.type}
 
-      {actionDoc.data?.params?.map(param => {
+      {actionDoc?.params?.map(param => {
          return (
           <div key={param.name}>
             <Label htmlFor={param.fieldname}>{param.label}</Label>
@@ -287,8 +289,7 @@ export function WorkflowConfigPanel({
             {param.fieldtype === "Data" &&
               <Input
               value={triggerFormState[param.fieldname]}
-              onChange={(v) => false /** TODO: set this in backend */
-              }
+              onChange={() => { /* TODO: set this in backend */ }}
               type="text"
               name={param.fieldname}
             />

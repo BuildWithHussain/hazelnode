@@ -1,20 +1,12 @@
-import { makeRequest } from '@/lib/request';
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { useFrappeGetCall } from 'frappe-react-sdk';
 
 interface UserInfo {
   full_name: string;
   user_image: string;
 }
 
-export const options = queryOptions({
-  queryKey: ['user-info'],
-  queryFn: (): Promise<UserInfo> =>
-    makeRequest({
-      type: 'method',
-      path: 'hazelnode.api.get_current_user_info',
-    }),
-});
-
 export function useUserInfo() {
-  return useQuery(options);
+  return useFrappeGetCall<{ message: UserInfo }>(
+    'hazelnode.api.get_current_user_info'
+  );
 }

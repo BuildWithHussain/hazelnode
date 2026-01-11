@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { DocTypeQueryParams, useDocType } from '@/queries/frappe';
+import { useFrappeGetDocList, useFrappeUpdateDoc } from 'frappe-react-sdk';
 import {
   Table,
   TableBody,
@@ -13,68 +13,46 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import CreateWorkflowDialog from './create-dialog';
 
 export const WorkflowList = () => {
   const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  const { useList, useSetValueMutation, getListOptions } =
-    useDocType<HazelWorkflow>('Hazel Workflow');
-
-  const listOptions: DocTypeQueryParams<HazelWorkflow> = {
-    fields: ['title', 'name', 'enabled'],
-    order_by: 'creation desc',
-  };
-
-  const workflowsList = useList(listOptions);
-  const queryOptions = getListOptions(listOptions);
-
-  const workflowSetValueMutation = useSetValueMutation();
-
-  function toggleEnabled(wf: HazelWorkflow) {
-    const currentWorkflows = queryClient.getQueryData(queryOptions.queryKey);
-
-    if (!currentWorkflows) {
-      return;
+  const { data: workflows, isLoading, error, mutate } = useFrappeGetDocList<HazelWorkflow>(
+    'Hazel Workflow',
+    {
+      fields: ['title', 'name', 'enabled'],
+      orderBy: { field: 'creation', order: 'desc' },
     }
+  );
 
-    const updatedWorkflows = [];
-    for (const workflow of currentWorkflows) {
-      const newWorkflow = { ...workflow };
-      if (workflow.name === wf.name) {
-        newWorkflow.enabled = wf.enabled ? 0 : 1;
-      }
-      updatedWorkflows.push(newWorkflow);
-    }
-    queryClient.setQueryData(queryOptions.queryKey, updatedWorkflows);
+  const { updateDoc } = useFrappeUpdateDoc<HazelWorkflow>();
 
-    workflowSetValueMutation.mutate(
-      {
-        name: wf.name,
-        values: {
-          enabled: wf.enabled ? 0 : 1,
-        },
-      },
-      {
-        onSuccess: () => {
-          toast.success(
-            `Workflow ${wf.enabled ? 'disabled' : 'enabled'} successfully!`,
-          );
-        },
-        onSettled: () => {
-          queryClient.invalidateQueries({
-            queryKey: queryOptions.queryKey,
-          });
-        },
-      },
+  async function toggleEnabled(wf: HazelWorkflow) {
+    const newEnabled = wf.enabled ? 0 : 1;
+
+    // Optimistic update
+    mutate(
+      workflows?.map((workflow) =>
+        workflow.name === wf.name ? { ...workflow, enabled: newEnabled } : workflow
+      ),
+      false
     );
+
+    try {
+      await updateDoc('Hazel Workflow', wf.name.toString(), {
+        enabled: newEnabled,
+      });
+      toast.success(`Workflow ${wf.enabled ? 'disabled' : 'enabled'} successfully!`);
+      mutate();
+    } catch {
+      mutate();
+      toast.error('Failed to update workflow');
+    }
   }
 
-  if (workflowsList.isLoading) {
+  if (isLoading) {
     return (
       <>
         <Skeleton className="h-8 w-[30%]" />
@@ -83,11 +61,9 @@ export const WorkflowList = () => {
     );
   }
 
-  if (workflowsList.isError) {
+  if (error) {
     return <p>Error loading workflows list...</p>;
   }
-
-  const workflows = workflowsList.data;
 
   return (
     <>
