@@ -10,6 +10,33 @@ export interface FrappeResponse<T = unknown> {
 	_server_messages?: string;
 }
 
+// Cache CSRF token per request context
+const csrfTokenCache = new WeakMap<APIRequestContext, string>();
+
+/**
+ * Get CSRF token from Frappe.
+ * Makes a request to get the token from cookies/response.
+ */
+async function getCsrfToken(request: APIRequestContext): Promise<string> {
+	// Check cache first
+	const cached = csrfTokenCache.get(request);
+	if (cached) {
+		return cached;
+	}
+
+	// Get CSRF token from Frappe's session info endpoint
+	const response = await request.get('/api/method/frappe.auth.get_csrf_token');
+
+	if (response.ok()) {
+		const data = await response.json();
+		const token = data.message || '';
+		csrfTokenCache.set(request, token);
+		return token;
+	}
+
+	return '';
+}
+
 /**
  * Create a new document via Frappe REST API.
  */
@@ -18,8 +45,14 @@ export async function createDoc<T = Record<string, unknown>>(
 	doctype: string,
 	doc: Record<string, unknown>
 ): Promise<T> {
+	const csrfToken = await getCsrfToken(request);
+
 	const response = await request.post(`/api/resource/${doctype}`, {
 		data: doc,
+		headers: {
+			'Content-Type': 'application/json',
+			...(csrfToken ? { 'X-Frappe-CSRF-Token': csrfToken } : {}),
+		},
 	});
 
 	if (!response.ok()) {
@@ -61,9 +94,17 @@ export async function updateDoc<T = Record<string, unknown>>(
 	name: string,
 	updates: Record<string, unknown>
 ): Promise<T> {
+	const csrfToken = await getCsrfToken(request);
+
 	const response = await request.put(
 		`/api/resource/${doctype}/${encodeURIComponent(name)}`,
-		{ data: updates }
+		{
+			data: updates,
+			headers: {
+				'Content-Type': 'application/json',
+				...(csrfToken ? { 'X-Frappe-CSRF-Token': csrfToken } : {}),
+			},
+		}
 	);
 
 	if (!response.ok()) {
@@ -83,8 +124,15 @@ export async function deleteDoc(
 	doctype: string,
 	name: string
 ): Promise<void> {
+	const csrfToken = await getCsrfToken(request);
+
 	const response = await request.delete(
-		`/api/resource/${doctype}/${encodeURIComponent(name)}`
+		`/api/resource/${doctype}/${encodeURIComponent(name)}`,
+		{
+			headers: {
+				...(csrfToken ? { 'X-Frappe-CSRF-Token': csrfToken } : {}),
+			},
+		}
 	);
 
 	if (!response.ok()) {
@@ -101,8 +149,14 @@ export async function callMethod<T = unknown>(
 	method: string,
 	args: Record<string, unknown> = {}
 ): Promise<T> {
+	const csrfToken = await getCsrfToken(request);
+
 	const response = await request.post(`/api/method/${method}`, {
 		data: args,
+		headers: {
+			'Content-Type': 'application/json',
+			...(csrfToken ? { 'X-Frappe-CSRF-Token': csrfToken } : {}),
+		},
 	});
 
 	if (!response.ok()) {

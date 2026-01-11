@@ -17,19 +17,12 @@ export class LoginPage {
 
 	constructor(page: Page) {
 		this.page = page;
-		// Frappe login page selectors - try multiple options for compatibility
-		this.emailInput = page.locator(
-			'input#login_email, input[autocomplete="username"], input[name="usr"]'
-		);
-		this.passwordInput = page.locator(
-			'input#login_password, input[type="password"]'
-		);
-		this.submitButton = page.locator(
-			'.btn-login, .btn-login-area button, button:has-text("Login")'
-		);
-		this.errorMessage = page.locator(
-			'.alert-danger, .msgprint, .login-content .alert'
-		);
+		// Frappe login page selectors - use exact IDs from frappe/www/login.html
+		// See: https://github.com/frappe/frappe/blob/develop/frappe/www/login.html
+		this.emailInput = page.locator('#login_email');
+		this.passwordInput = page.locator('#login_password');
+		this.submitButton = page.locator('button.btn-login');
+		this.errorMessage = page.locator('.msgprint, .alert-danger').first();
 	}
 
 	/**
