@@ -55,9 +55,14 @@ export class WorkflowListPage {
 	 * Wait for the page to finish loading.
 	 */
 	async waitForLoaded(): Promise<void> {
-		// Wait for loading state to finish
+		// Wait for DOM to settle
+		await this.page.waitForLoadState('domcontentloaded');
+		// Wait for page title and button (appear even during loading)
+		await this.pageTitle.waitFor({ state: 'visible', timeout: 30000 });
+		await this.newWorkflowButton.waitFor({ state: 'visible', timeout: 10000 });
+		// Wait for network to settle
 		await this.page.waitForLoadState('networkidle');
-		// Wait for either the table or error message
+		// Wait for either the table or error message to confirm data loaded
 		await Promise.race([
 			this.workflowTable.waitFor({ state: 'visible', timeout: 30000 }),
 			this.errorMessage.waitFor({ state: 'visible', timeout: 30000 }),
@@ -70,11 +75,14 @@ export class WorkflowListPage {
 	 * Open the create workflow dialog.
 	 */
 	async openCreateDialog(): Promise<void> {
+		// Ensure button is visible and enabled
+		await this.newWorkflowButton.waitFor({ state: 'visible', timeout: 10000 });
+		await expect(this.newWorkflowButton).toBeEnabled();
 		await this.newWorkflowButton.click();
 		// Wait for dialog with animation transition time
 		await this.createDialog.waitFor({ state: 'visible', timeout: 10000 });
 		// Wait for input to be visible and interactable
-		await this.titleInput.waitFor({ state: 'visible', timeout: 5000 });
+		await this.titleInput.first().waitFor({ state: 'visible', timeout: 5000 });
 	}
 
 	/**
