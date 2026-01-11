@@ -29,9 +29,12 @@ export class WorkflowListPage {
 		this.loadingSkeleton = page.locator('[class*="skeleton"]');
 		this.errorMessage = page.locator('text=Error loading workflows');
 
-		// Create dialog elements
+		// Create dialog elements - HeadlessUI dialog panel
 		this.createDialog = page.locator('[role="dialog"]');
-		this.titleInput = page.locator('[role="dialog"] input#title');
+		// Input may have id="title" or use a label
+		this.titleInput = page.locator(
+			'[role="dialog"] input#title, [role="dialog"] input[type="text"]'
+		);
 		this.createButton = page.locator(
 			'[role="dialog"] button:has-text("Create")'
 		);
@@ -68,7 +71,10 @@ export class WorkflowListPage {
 	 */
 	async openCreateDialog(): Promise<void> {
 		await this.newWorkflowButton.click();
-		await this.createDialog.waitFor({ state: 'visible' });
+		// Wait for dialog with animation transition time
+		await this.createDialog.waitFor({ state: 'visible', timeout: 10000 });
+		// Wait for input to be visible and interactable
+		await this.titleInput.waitFor({ state: 'visible', timeout: 5000 });
 	}
 
 	/**
@@ -76,8 +82,10 @@ export class WorkflowListPage {
 	 */
 	async createWorkflow(title: string): Promise<void> {
 		await this.openCreateDialog();
-		await this.titleInput.fill(title);
+		// Use first() in case the locator matches multiple elements
+		await this.titleInput.first().fill(title);
 		await this.createButton.click();
+		// Wait for navigation to editor page
 		await this.page.waitForURL(/.*workflow\/.*/, { timeout: 30000 });
 	}
 
