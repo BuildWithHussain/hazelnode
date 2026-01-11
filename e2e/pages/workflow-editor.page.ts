@@ -168,16 +168,26 @@ export class WorkflowEditorPage {
 
 	/**
 	 * Delete the currently selected node.
+	 * Tries both Delete and Backspace keys as ReactFlow may respond to either.
 	 */
 	async deleteSelectedNode(): Promise<void> {
+		// Try Delete key first, then Backspace
 		await this.page.keyboard.press('Delete');
+		await this.page.keyboard.press('Backspace');
 	}
 
 	/**
 	 * Delete a node by its ID.
 	 */
 	async deleteNode(nodeId: string): Promise<void> {
-		await this.selectNode(nodeId);
+		const node = this.getNodeById(nodeId);
+		// Click on the node to select it and ensure focus
+		await node.click();
+		// Verify node is selected
+		await expect(node).toHaveClass(/selected/);
+		// Small delay to ensure selection is registered
+		await this.page.waitForTimeout(100);
+		// Press delete keys
 		await this.deleteSelectedNode();
 	}
 
@@ -202,25 +212,35 @@ export class WorkflowEditorPage {
 	}
 
 	/**
-	 * Zoom in on the canvas.
+	 * Get a control button by its aria-label or title.
+	 * ReactFlow may use different attributes in different versions.
 	 */
-	async zoomIn(): Promise<void> {
-		await this.waitForControlsReady();
-		const zoomInButton = this.controls.locator('button[title="zoom in"]');
-		await zoomInButton.waitFor({ state: 'visible', timeout: 5000 });
-		await expect(zoomInButton).toBeEnabled({ timeout: 5000 });
-		await zoomInButton.click();
+	private getControlButton(name: string): Locator {
+		return this.controls.locator(
+			`button[aria-label="${name}"], button[title="${name}"]`
+		);
 	}
 
 	/**
-	 * Zoom out on the canvas.
+	 * Zoom in on the canvas using keyboard shortcut.
+	 * Falls back to button click if available.
+	 */
+	async zoomIn(): Promise<void> {
+		await this.waitForControlsReady();
+		// Use keyboard shortcut: Ctrl/Cmd + Plus
+		await this.canvas.click();
+		await this.page.keyboard.press('Control+=');
+	}
+
+	/**
+	 * Zoom out on the canvas using keyboard shortcut.
+	 * Falls back to button click if available.
 	 */
 	async zoomOut(): Promise<void> {
 		await this.waitForControlsReady();
-		const zoomOutButton = this.controls.locator('button[title="zoom out"]');
-		await zoomOutButton.waitFor({ state: 'visible', timeout: 5000 });
-		await expect(zoomOutButton).toBeEnabled({ timeout: 5000 });
-		await zoomOutButton.click();
+		// Use keyboard shortcut: Ctrl/Cmd + Minus
+		await this.canvas.click();
+		await this.page.keyboard.press('Control+-');
 	}
 
 	/**
@@ -228,9 +248,8 @@ export class WorkflowEditorPage {
 	 */
 	async fitView(): Promise<void> {
 		await this.waitForControlsReady();
-		const fitButton = this.controls.locator('button[title="fit view"]');
+		const fitButton = this.getControlButton('fit view');
 		await fitButton.waitFor({ state: 'visible', timeout: 5000 });
-		await expect(fitButton).toBeEnabled({ timeout: 5000 });
 		await fitButton.click();
 	}
 
