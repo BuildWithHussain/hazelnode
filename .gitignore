@@ -8,3 +8,8 @@ __pycache__
 hazelnode/public/frontend
 hazelnode/www/frontend.html
 hazelnode/www/hazelnode.html
+
+# Playwright
+e2e/.auth/
+playwright-report/
+test-results/
