@@ -1,6 +1,6 @@
 import 'reactflow/dist/style.css';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -8,6 +8,7 @@ import ReactFlow, {
   Connection,
   addEdge,
   MarkerType,
+  ReactFlowInstance,
 } from 'reactflow';
 
 import WorkflowNode from '@/components/nodes/node';
@@ -16,11 +17,19 @@ import { useEditorStore } from '@/stores/editor';
 import { AddTriggerNode } from '@/components/nodes/add-trigger-node';
 import { getProcessedNodes, getProcessedEdges } from '@/utils/editor';
 
+interface DragData {
+  nodeType: string;
+  kind: 'Action' | 'Trigger';
+}
+
 export default function WorkflowEditor({
   hazelWorkflow,
 }: {
   hazelWorkflow: HazelWorkflow;
 }) {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+
   // Registering custom node types
   const nodeTypes = useMemo(
     () => ({
@@ -38,6 +47,7 @@ export default function WorkflowEditor({
     onEdgesChange: state.onFlowEdgesChange,
     setNodes: state.setFlowNodes,
     setEdges: state.setFlowEdges,
+    addNodeAtPosition: state.addNodeAtPosition,
   }));
 
   useEffect(() => {
@@ -63,28 +73,75 @@ export default function WorkflowEditor({
     [editorStore.edges],
   );
 
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
+      const dataStr = event.dataTransfer.getData('application/reactflow');
+
+      if (!dataStr || !reactFlowBounds || !reactFlowInstance.current) {
+        return;
+      }
+
+      try {
+        const data: DragData = JSON.parse(dataStr);
+
+        const position = reactFlowInstance.current.screenToFlowPosition({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
+
+        editorStore.addNodeAtPosition(
+          {
+            type: data.nodeType,
+            kind: data.kind,
+          },
+          position
+        );
+      } catch {
+        console.error('Failed to parse drag data');
+      }
+    },
+    [editorStore.addNodeAtPosition]
+  );
+
+  const onInit = useCallback((instance: ReactFlowInstance) => {
+    reactFlowInstance.current = instance;
+  }, []);
+
   return (
+    <div ref={reactFlowWrapper} className="h-full w-full">
     <ReactFlow
-      className="h-full w-full"
-      nodes={editorStore.nodes}
-      edges={editorStore.edges}
-      onNodesChange={editorStore.onNodesChange}
-      onEdgesChange={editorStore.onEdgesChange}
-      onConnect={onConnect}
-      nodeTypes={nodeTypes}
-      defaultEdgeOptions={{
-        markerEnd: { type: MarkerType.ArrowClosed },
-      }}
-      fitView
-      fitViewOptions={{ padding: 0.2 }}
-    >
-      <Controls position={'top-right'} />
-      <Background
-        className="bg-zinc-50"
-        variant={BackgroundVariant.Dots}
-        gap={18}
-        size={1}
-      />
-    </ReactFlow>
+        className="h-full w-full"
+        nodes={editorStore.nodes}
+        edges={editorStore.edges}
+        onNodesChange={editorStore.onNodesChange}
+        onEdgesChange={editorStore.onEdgesChange}
+        onConnect={onConnect}
+        onInit={onInit}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        nodeTypes={nodeTypes}
+        defaultEdgeOptions={{
+          markerEnd: { type: MarkerType.ArrowClosed },
+        }}
+        fitView
+        fitViewOptions={{ padding: 0.2 }}
+      >
+        <Controls position={'top-right'} />
+        <Background
+          className="bg-zinc-50"
+          variant={BackgroundVariant.Dots}
+          gap={18}
+          size={1}
+        />
+      </ReactFlow>
+    </div>
   );
 }

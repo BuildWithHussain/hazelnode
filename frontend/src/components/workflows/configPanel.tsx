@@ -1,6 +1,5 @@
 import {
   useFrappeGetDoc,
-  useFrappeGetDocList,
   useFrappeUpdateDoc,
   useFrappeDeleteDoc,
 } from 'frappe-react-sdk';
@@ -38,7 +37,6 @@ export function WorkflowConfigPanel({
   const editorStore = useEditorStore((state) => ({
     nodes: state.flowNodes,
     edges: state.flowEdges,
-    appendNode: state.appendNode,
     selectedNode: state.selectedNode,
   }));
 
@@ -58,14 +56,7 @@ export function WorkflowConfigPanel({
     }
   );
 
-  const { data: actions } = useFrappeGetDocList<HazelNodeType>(
-    'Hazel Node Type',
-    {
-      fields: ['name', 'description'],
-      filters: [['kind', '=', 'Action']],
-    }
-  );
-
+  
   const { updateDoc } = useFrappeUpdateDoc<HazelWorkflow>();
   const { deleteDoc } = useFrappeDeleteDoc();
 
@@ -126,13 +117,7 @@ export function WorkflowConfigPanel({
     }
   }
 
-  function addAction(nodeType: string) {
-    editorStore.appendNode({
-      type: nodeType,
-      kind: 'Action',
-    });
-  }
-
+  
   return (
     <ScrollArea  className="h-full p-3">
       <strong>{hazelWorkflow.title}</strong>
@@ -212,23 +197,7 @@ export function WorkflowConfigPanel({
       <Button color="rose" onClick={handleDeleteWorkflow}>
         Delete Workflow
       </Button>
-      {hazelWorkflow.trigger_type && (
-        <>
-          <h2 className=" mt-4 text-xl font-bold text-gray-900">Actions</h2>
-          <div className="mt-1 flex flex-col gap-2">
-            {actions?.map((node) => (
-              <Button
-                key={node.name}
-                color={node.name === 'Condition' ? 'amber' : 'yellow'}
-                onClick={() => addAction(node.name)}
-              >
-                {node.name}
-              </Button>
-            ))}
-          </div>
-        </>
-      )}
-      <h2 className=" mt-4 text-xl font-bold text-gray-900">Action Settings</h2>
+            <h2 className=" mt-4 text-xl font-bold text-gray-900">Action Settings</h2>
       {editorStore.selectedNode?.data.type}
 
       {actionDoc?.params?.map(param => {

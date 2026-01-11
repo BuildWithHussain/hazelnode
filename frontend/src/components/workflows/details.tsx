@@ -8,6 +8,7 @@ import {
 import WorkflowEditor from '@/components/workflows/editor';
 import { Route as WorkflowDetailsRoute } from '@/routes/workflow.$id';
 import { WorkflowConfigPanel } from '@/components/workflows/configPanel';
+import { NodePalette } from '@/components/workflows/node-palette';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function WorkflowDetails() {
@@ -34,7 +35,16 @@ export function WorkflowDetails() {
   return (
     <div className="h-full w-full">
       <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={70}>
+        <ResizablePanel defaultSize={15} minSize={10} maxSize={25}>
+          <div className="h-full border-r bg-gray-50/50">
+            <div className="p-3 border-b">
+              <h2 className="font-semibold text-sm">Node Palette</h2>
+            </div>
+            <NodePalette />
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={55}>
           <WorkflowEditor hazelWorkflow={workflow} />
         </ResizablePanel>
         <ResizableHandle withHandle />

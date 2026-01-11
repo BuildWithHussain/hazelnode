@@ -22,6 +22,10 @@ interface WorkflowEditorActions {
   setSelectedNode: (node: Node | null) => void;
   removeNode: (nodeId: string) => void;
   appendNode: (node: Partial<EditorNodeData>) => void;
+  addNodeAtPosition: (
+    node: Partial<EditorNodeData>,
+    position: { x: number; y: number }
+  ) => void;
   resetFlows: () => void;
   generateNodeId: () => string;
 }
@@ -138,6 +142,30 @@ export const useEditorStore = create<
     set({
       flowNodes: [...currentNodes, newNode],
       flowEdges: newEdges,
+    });
+  },
+
+  addNodeAtPosition(nodeData, position) {
+    const currentNodes = get().flowNodes;
+    const nodeId = get().generateNodeId();
+    const isCondition = nodeData.type === 'Condition';
+
+    const newNode: Node<EditorNodeData> = {
+      id: nodeId,
+      position,
+      data: {
+        node_id: nodeId,
+        name: nodeData.name || nodeData.type || '',
+        type: nodeData.type || '',
+        kind: nodeData.kind || 'Action',
+        parameters: nodeData.parameters,
+      },
+      type: isCondition ? 'conditionNode' : 'workflowNode',
+      draggable: true,
+    };
+
+    set({
+      flowNodes: [...currentNodes, newNode],
     });
   },
 }));
