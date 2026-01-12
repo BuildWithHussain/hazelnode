@@ -786,3 +786,71 @@ class TestNodeUtils(FrappeTestCase):
 		"""Test parsing JSON array."""
 		result = parse_json_field('[1, 2, 3]', {}, 'test')
 		self.assertEqual(result, [1, 2, 3])
+
+
+# ===== HAZEL NODE DOCTYPE TESTS =====
+
+
+class TestHazelNode(FrappeTestCase):
+	"""Tests for the Hazel Node doctype execution."""
+
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		# Ensure node types exist
+		if not frappe.db.exists('Hazel Node Type', 'Set Variable'):
+			frappe.get_doc({
+				'doctype': 'Hazel Node Type',
+				'name': 'Set Variable',
+				'kind': 'Action',
+				'handler_path': 'hazelnode.nodes.actions.set_variable_node.SetVariableNode',
+				'is_standard': 1,
+			}).insert(ignore_permissions=True)
+
+		if not frappe.db.exists('Hazel Node Type', 'Log'):
+			frappe.get_doc({
+				'doctype': 'Hazel Node Type',
+				'name': 'Log',
+				'kind': 'Action',
+				'handler_path': 'hazelnode.nodes.actions.log_node.LogNode',
+				'is_standard': 1,
+			}).insert(ignore_permissions=True)
+
+		frappe.db.commit()
+
+	def test_node_execute_loads_handler(self):
+		"""Test that node execution loads the correct handler."""
+		# Create a mock node document
+		node = frappe.get_doc({
+			'doctype': 'Hazel Node',
+			'node_id': 'test_node_1',
+			'type': 'Set Variable',
+			'kind': 'Action',
+			'event': None,
+			'parameters': '{}',
+		})
+
+		params = {'variable_name': 'test', 'value': 'hello'}
+		result = node.execute(params, {})
+
+		self.assertEqual(result.get('test'), 'hello')
+
+	def test_node_execute_passes_context(self):
+		"""Test that node execution passes context correctly."""
+		node = frappe.get_doc({
+			'doctype': 'Hazel Node',
+			'node_id': 'test_node_2',
+			'type': 'Set Variable',
+			'kind': 'Action',
+			'event': None,
+			'parameters': '{}',
+		})
+
+		params = {
+			'variable_name': 'greeting',
+			'value': 'Hello, {{ name }}!',
+		}
+		context = {'name': 'World'}
+		result = node.execute(params, context)
+
+		self.assertEqual(result.get('greeting'), 'Hello, World!')
