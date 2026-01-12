@@ -673,6 +673,8 @@ class TestHazelNode(FrappeTestCase):
 				'is_standard': 1,
 			}).insert(ignore_permissions=True)
 
+		frappe.db.commit()
+
 	def test_node_execute_loads_handler(self):
 		"""Test that node execution loads the correct handler."""
 		# Create a mock node document

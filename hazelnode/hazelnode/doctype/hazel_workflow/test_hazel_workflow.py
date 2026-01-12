@@ -6,13 +6,19 @@ from frappe.tests.utils import FrappeTestCase
 
 
 class TestHazelWorkflow(FrappeTestCase):
-	"""Comprehensive tests for the Hazel Workflow execution engine."""
+	"""
+	Comprehensive tests for the Hazel Workflow execution engine.
+
+	Tests cover linear and graph-based execution modes,
+	condition node branching, context passing, and error handling.
+	"""
 
 	@classmethod
 	def setUpClass(cls):
 		super().setUpClass()
 		# Ensure node types are loaded from fixtures
 		cls._ensure_node_types_exist()
+		frappe.db.commit()
 
 	@classmethod
 	def _ensure_node_types_exist(cls):
