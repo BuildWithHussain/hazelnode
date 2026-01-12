@@ -97,3 +97,20 @@ Pre-commit hooks auto-run on commit (ruff format, ruff check, import sorting).
 - Services: MariaDB 10.6, Redis (ports 13000, 11000)
 - Python 3.14, Node 24
 - Runs: `bench --site test_site run-tests --app hazelnode`
+
+## MCP Servers
+
+### shadcn MCP
+
+The project includes shadcn MCP server configuration (`.mcp.json`) for AI-assisted component management. This enables:
+
+- Browse and search shadcn components
+- Install components using natural language
+- Works with Claude Code, Cursor, and VS Code
+
+**Example prompts:**
+- "Show me all available components in the shadcn registry"
+- "Add the button, dialog and card components to my project"
+- "Create a contact form using components from the shadcn registry"
+
+**Configuration:** `frontend/components.json` (style: new-york, baseColor: slate)

@@ -1,10 +1,12 @@
 import { createContext, useCallback, useRef, useState } from 'react';
 import {
   Dialog,
-  DialogActions,
+  DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
-} from '@/components/ui/catalyst-dialog';
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 interface ConfirmOptions {
@@ -47,33 +49,35 @@ export function ConfirmDialogProvider({
     <ConfirmContext.Provider value={confirm}>
       {children}
       <Dialog
-        size="sm"
         open={state.isOpen}
-        onClose={() => fn.current && fn.current(false)}
+        onOpenChange={(open) => !open && fn.current && fn.current(false)}
       >
-        <DialogTitle>{state.title}</DialogTitle>
+        <DialogContent className="sm:max-w-sm" data-testid="confirm-dialog">
+          <DialogHeader>
+            <DialogTitle>{state.title}</DialogTitle>
+            {state.description && (
+              <DialogDescription>{state.description}</DialogDescription>
+            )}
+          </DialogHeader>
 
-        {state.description && (
-          <DialogDescription>{state.description}</DialogDescription>
-        )}
-
-        <DialogActions>
-          <Button outline onClick={() => fn.current && fn.current(false)}>
-            Cancel
-          </Button>
-          <Button
-            color={
-              state.actionType == 'danger'
-                ? 'rose'
-                : state.actionType == 'warning'
-                  ? 'yellow'
-                  : 'lime'
-            }
-            onClick={() => fn.current && fn.current(true)}
-          >
-            Confirm
-          </Button>
-        </DialogActions>
+          <DialogFooter className="mt-4">
+            <Button outline onClick={() => fn.current && fn.current(false)}>
+              Cancel
+            </Button>
+            <Button
+              color={
+                state.actionType == 'danger'
+                  ? 'rose'
+                  : state.actionType == 'warning'
+                    ? 'yellow'
+                    : 'lime'
+              }
+              onClick={() => fn.current && fn.current(true)}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </ConfirmContext.Provider>
   );
