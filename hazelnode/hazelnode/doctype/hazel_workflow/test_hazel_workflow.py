@@ -1333,3 +1333,102 @@ class TestHazelWorkflow(FrappeTestCase):
 		# Should not raise
 		context = workflow.execute()
 		self.assertIsNone(context)
+
+	# ===== INTEGRATION SCENARIO TESTS =====
+
+	def test_webhook_create_todo_use_created_id(self):
+		"""
+		Test scenario: Webhook received -> Create ToDo -> use created ID.
+
+		This tests the full data flow:
+		1. Webhook trigger receives payload (simulated via initial context)
+		2. Create Document node creates a ToDo using webhook data
+		3. Subsequent node accesses created_doc_name via template
+		"""
+		workflow = self._create_workflow(
+			title='Test Webhook Create Todo Flow',
+			trigger_type='Webhook Listener',
+			nodes=[
+				{
+					'node_id': 'create_todo',
+					'type': 'Create Document',
+					'kind': 'Action',
+					'parameters': frappe.as_json({
+						'doctype': 'ToDo',
+						'field_values': frappe.as_json({
+							'description': 'Test: {{ webhook_data.task }}',
+							'priority': '{{ webhook_data.priority }}',
+						}),
+						'ignore_permissions': True,
+					}),
+				},
+				{
+					'node_id': 'log_created_id',
+					'type': 'Log',
+					'kind': 'Action',
+					'parameters': frappe.as_json({
+						'message': 'Created ToDo: {{ created_doc_name }}',
+						'log_level': 'Info',
+					}),
+				},
+				{
+					'node_id': 'store_for_api',
+					'type': 'Set Variable',
+					'kind': 'Action',
+					'parameters': frappe.as_json({
+						'variable_name': 'api_url',
+						'value': 'https://api.example.com/todos/{{ created_doc_name }}',
+					}),
+				},
+			],
+			connections=[
+				{
+					'source_node_id': 'trigger',
+					'target_node_id': 'create_todo',
+					'source_handle': 'default',
+				},
+				{
+					'source_node_id': 'create_todo',
+					'target_node_id': 'log_created_id',
+					'source_handle': 'default',
+				},
+				{
+					'source_node_id': 'log_created_id',
+					'target_node_id': 'store_for_api',
+					'source_handle': 'default',
+				},
+			],
+		)
+
+		# Simulate webhook payload as initial context
+		webhook_payload = {
+			'webhook_data': {
+				'task': 'Test task from webhook',
+				'priority': 'Medium',
+			}
+		}
+
+		context = workflow.execute(context=webhook_payload)
+
+		# Verify ToDo was created
+		self.assertIn('created_doc_name', context)
+		self.assertIsNotNone(context['created_doc_name'])
+
+		# Verify the ToDo exists with correct values
+		todo = frappe.get_doc('ToDo', context['created_doc_name'])
+		self.assertEqual(todo.description, 'Test: Test task from webhook')
+		self.assertEqual(todo.priority, 'Medium')
+
+		# Verify template rendering with created_doc_name
+		self.assertIn('logs', context)
+		self.assertEqual(len(context['logs']), 1)
+		self.assertIn(
+			context['created_doc_name'], context['logs'][0]['message']
+		)
+
+		# Verify the API URL was constructed with the ToDo ID
+		self.assertIn('api_url', context)
+		self.assertIn(context['created_doc_name'], context['api_url'])
+		self.assertTrue(
+			context['api_url'].startswith('https://api.example.com/todos/')
+		)
