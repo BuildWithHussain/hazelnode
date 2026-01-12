@@ -5,9 +5,20 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 
 from hazelnode.nodes.actions.condition_node import ConditionNode
+from hazelnode.nodes.actions.create_document_node import (
+	CreateDocumentNode,
+)
 from hazelnode.nodes.actions.delay_node import DelayNode
 from hazelnode.nodes.actions.log_node import LogNode
 from hazelnode.nodes.actions.set_variable_node import SetVariableNode
+from hazelnode.nodes.actions.update_document_node import (
+	UpdateDocumentNode,
+)
+from hazelnode.nodes.utils import (
+	ensure_context,
+	parse_json_field,
+	render_template_field,
+)
 
 
 class TestConditionNode(FrappeTestCase):
@@ -715,12 +726,6 @@ class TestHazelNode(FrappeTestCase):
 
 # ===== UTILITY FUNCTION TESTS =====
 
-from hazelnode.nodes.utils import (
-	ensure_context,
-	parse_json_field,
-	render_template_field,
-)
-
 
 class TestNodeUtils(FrappeTestCase):
 	"""Tests for node utility functions."""
@@ -852,13 +857,6 @@ class TestNodeUtils(FrappeTestCase):
 
 
 # ===== DOCUMENT NODE TESTS =====
-
-from hazelnode.nodes.actions.create_document_node import (
-	CreateDocumentNode,
-)
-from hazelnode.nodes.actions.update_document_node import (
-	UpdateDocumentNode,
-)
 
 
 class TestCreateDocumentNode(FrappeTestCase):
