@@ -19,7 +19,10 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
 	workers: 1, // Single worker for Frappe session management
-	reporter: process.env.CI ? 'github' : 'html',
+	// Use multiple reporters in CI for both inline annotations and HTML artifacts
+	reporter: process.env.CI
+		? [['github'], ['html', { open: 'never' }]]
+		: 'html',
 	timeout: 60000, // 60s per test
 
 	expect: {
