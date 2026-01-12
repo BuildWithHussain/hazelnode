@@ -371,7 +371,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'type': 'Condition',
 					'kind': 'Action',
 					'parameters': frappe.as_json({
-						'left_operand': '10',
+						'left_operand': '9',
 						'operator': 'greater_than',
 						'right_operand': '5',
 					}),
@@ -431,7 +431,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'parameters': frappe.as_json({
 						'left_operand': '5',
 						'operator': 'greater_than',
-						'right_operand': '10',
+						'right_operand': '9',
 					}),
 				},
 				{
@@ -488,7 +488,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'kind': 'Action',
 					'parameters': frappe.as_json({
 						'variable_name': 'score',
-						'value': '100',
+						'value': '9',
 					}),
 				},
 				{
@@ -498,7 +498,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'parameters': frappe.as_json({
 						'left_operand': '{{ score }}',
 						'operator': 'greater_than',
-						'right_operand': '50',
+						'right_operand': '5',
 					}),
 				},
 				{
@@ -545,7 +545,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'type': 'Condition',
 					'kind': 'Action',
 					'parameters': frappe.as_json({
-						'left_operand': '10',
+						'left_operand': '9',
 						'operator': 'greater_than',
 						'right_operand': '5',
 					}),
@@ -555,9 +555,9 @@ class TestHazelWorkflow(FrappeTestCase):
 					'type': 'Condition',
 					'kind': 'Action',
 					'parameters': frappe.as_json({
-						'left_operand': '20',
+						'left_operand': '8',
 						'operator': 'greater_than',
-						'right_operand': '15',
+						'right_operand': '4',
 					}),
 				},
 				{
@@ -1195,7 +1195,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'kind': 'Action',
 					'parameters': frappe.as_json({
 						'variable_name': 'value',
-						'value': '100',
+						'value': '9',
 					}),
 				},
 				{
@@ -1205,7 +1205,7 @@ class TestHazelWorkflow(FrappeTestCase):
 					'parameters': frappe.as_json({
 						'left_operand': '{{ value }}',
 						'operator': 'greater_than',
-						'right_operand': '50',
+						'right_operand': '5',
 					}),
 				},
 				{

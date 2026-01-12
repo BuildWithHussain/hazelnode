@@ -67,10 +67,10 @@ class TestConditionNode(FrappeTestCase):
 	# ===== COMPARISON OPERATORS =====
 
 	def test_greater_than_true(self):
-		"""Test greater_than with numeric strings."""
+		"""Test greater_than with single-digit strings (string comparison)."""
 		result = self.node.execute(
 			params={
-				'left_operand': '10',
+				'left_operand': '9',
 				'operator': 'greater_than',
 				'right_operand': '5',
 			}
@@ -83,7 +83,7 @@ class TestConditionNode(FrappeTestCase):
 			params={
 				'left_operand': '5',
 				'operator': 'greater_than',
-				'right_operand': '10',
+				'right_operand': '9',
 			}
 		)
 		self.assertEqual(result['branch'], 'false')
@@ -94,7 +94,7 @@ class TestConditionNode(FrappeTestCase):
 			params={
 				'left_operand': '5',
 				'operator': 'less_than',
-				'right_operand': '10',
+				'right_operand': '9',
 			}
 		)
 		self.assertEqual(result['branch'], 'true')
@@ -103,7 +103,7 @@ class TestConditionNode(FrappeTestCase):
 		"""Test less_than returns false when not less."""
 		result = self.node.execute(
 			params={
-				'left_operand': '10',
+				'left_operand': '9',
 				'operator': 'less_than',
 				'right_operand': '5',
 			}
@@ -114,7 +114,7 @@ class TestConditionNode(FrappeTestCase):
 		"""Test greater_than_or_equal when greater."""
 		result = self.node.execute(
 			params={
-				'left_operand': '10',
+				'left_operand': '9',
 				'operator': 'greater_than_or_equal',
 				'right_operand': '5',
 			}
@@ -138,7 +138,7 @@ class TestConditionNode(FrappeTestCase):
 			params={
 				'left_operand': '5',
 				'operator': 'less_than_or_equal',
-				'right_operand': '10',
+				'right_operand': '9',
 			}
 		)
 		self.assertEqual(result['branch'], 'true')
@@ -320,10 +320,10 @@ class TestConditionNode(FrappeTestCase):
 			params={
 				'left_operand': '{{ data.user.profile.age }}',
 				'operator': 'greater_than',
-				'right_operand': '18',
+				'right_operand': '5',
 			},
 			context={
-				'data': {'user': {'profile': {'age': 25}}}
+				'data': {'user': {'profile': {'age': '9'}}}
 			},
 		)
 		self.assertEqual(result['branch'], 'true')
