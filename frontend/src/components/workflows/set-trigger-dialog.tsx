@@ -3,11 +3,11 @@ import { useFrappeGetDocList, useFrappeUpdateDoc } from 'frappe-react-sdk';
 
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
-  DialogBody,
+  DialogHeader,
   DialogTitle,
-} from '@/components/ui/catalyst-dialog';
-import { type DialogProps as HeadlessDialogProps } from '@headlessui/react';
+} from '@/components/ui/dialog';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,7 +20,7 @@ export default function SetTriggerDialog({
 }: {
   open: boolean | undefined;
   onClose: (isOpen: boolean) => void;
-} & HeadlessDialogProps) {
+}) {
   const editorStore = useEditorStore((state) => ({
     appendNode: state.appendNode,
     removeNode: state.removeNode,
@@ -58,32 +58,39 @@ export default function SetTriggerDialog({
   }
 
   return (
-    <Dialog open={open} onClose={onClose} size="3xl">
-      <DialogTitle>Select a trigger</DialogTitle>
-      <DialogDescription>
-        The event that will trigger a run of this workflow
-      </DialogDescription>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent
+        className="sm:max-w-3xl"
+        data-testid="set-trigger-dialog"
+      >
+        <DialogHeader>
+          <DialogTitle>Select a trigger</DialogTitle>
+          <DialogDescription>
+            The event that will trigger a run of this workflow
+          </DialogDescription>
+        </DialogHeader>
 
-      <DialogBody>
-        {isLoading && (
-          <Skeleton className="h-12 w-full"></Skeleton>
-        )}
-        {error && (
-          <span>Error fetching list of triggers...</span>
-        )}
+        <div className="mt-4">
+          {isLoading && (
+            <Skeleton className="h-12 w-full"></Skeleton>
+          )}
+          {error && (
+            <span>Error fetching list of triggers...</span>
+          )}
 
-        {!error && triggers && (
-          <ol className="flex flex-col gap-2">
-            {triggers.map((trigger) => (
-              <li key={trigger.name}>
-                <Button onClick={() => setTrigger(trigger)} color="fuchsia">
-                  {trigger.name}
-                </Button>
-              </li>
-            ))}
-          </ol>
-        )}
-      </DialogBody>
+          {!error && triggers && (
+            <ol className="flex flex-col gap-2">
+              {triggers.map((trigger) => (
+                <li key={trigger.name}>
+                  <Button onClick={() => setTrigger(trigger)} color="fuchsia">
+                    {trigger.name}
+                  </Button>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </DialogContent>
     </Dialog>
   );
 }

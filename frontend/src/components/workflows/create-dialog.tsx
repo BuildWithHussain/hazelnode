@@ -4,25 +4,24 @@ import { useFrappeCreateDoc } from 'frappe-react-sdk';
 
 import {
   Dialog,
-  DialogActions,
-  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
-} from '@/components/ui/catalyst-dialog';
+} from '@/components/ui/dialog';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { type DialogProps as HeadlessDialogProps } from '@headlessui/react';
 
 export default function CreateWorkflowDialog({
   open,
   onClose,
-  ...props
 }: {
   open: boolean | undefined;
   onClose: (isOpen: boolean) => void;
-} & HeadlessDialogProps) {
+}) {
   const [workflowTitle, setWorkflowTitle] = useState('');
   const navigate = useNavigate();
 
@@ -53,11 +52,16 @@ export default function CreateWorkflowDialog({
   }
 
   return (
-    <Dialog open={open} onClose={onClose} {...props}>
-      <DialogTitle>Create new workflow</DialogTitle>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent
+        className="sm:max-w-lg"
+        data-testid="create-workflow-dialog"
+      >
+        <DialogHeader>
+          <DialogTitle>Create new workflow</DialogTitle>
+        </DialogHeader>
 
-      <DialogBody>
-        <div>
+        <div className="mt-4">
           <Label htmlFor="title">Title</Label>
           <Input
             value={workflowTitle}
@@ -67,16 +71,16 @@ export default function CreateWorkflowDialog({
             placeholder="Send an email on form submit"
           />
         </div>
-      </DialogBody>
 
-      <DialogActions>
-        <Button outline onClick={() => onClose(false)}>
-          Cancel
-        </Button>
-        <Button color="lime" onClick={handleCreateWorkflow} disabled={loading}>
-          {loading ? 'Creating...' : 'Create'}
-        </Button>
-      </DialogActions>
+        <DialogFooter className="mt-6">
+          <Button outline onClick={() => onClose(false)}>
+            Cancel
+          </Button>
+          <Button color="lime" onClick={handleCreateWorkflow} disabled={loading}>
+            {loading ? 'Creating...' : 'Create'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

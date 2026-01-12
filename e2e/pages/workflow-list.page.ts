@@ -29,13 +29,13 @@ export class WorkflowListPage {
 		this.loadingSkeleton = page.locator('[class*="skeleton"]');
 		this.errorMessage = page.locator('text=Error loading workflows');
 
-		// Create dialog elements - HeadlessUI dialog panel
-		// Use content-based selectors as HeadlessUI transitions can leave role="dialog" in DOM
-		this.createDialog = page.locator('text=Create new workflow');
-		// Input has id="title"
-		this.titleInput = page.locator('input#title');
-		this.createButton = page.locator('button:has-text("Create"):not(:has-text("Creating"))');
-		this.cancelButton = page.locator('button:has-text("Cancel")');
+		// Create dialog elements - shadcn/Radix dialog
+		// Use data-testid for stable selectors with Radix dialogs
+		this.createDialog = page.locator('[data-testid="create-workflow-dialog"]');
+		// Input has id="title" within the dialog
+		this.titleInput = this.createDialog.locator('input#title');
+		this.createButton = this.createDialog.locator('button:has-text("Create"):not(:has-text("Creating"))');
+		this.cancelButton = this.createDialog.locator('button:has-text("Cancel")');
 	}
 
 	/**
@@ -74,7 +74,7 @@ export class WorkflowListPage {
 		await this.newWorkflowButton.waitFor({ state: 'visible', timeout: 10000 });
 		await expect(this.newWorkflowButton).toBeEnabled();
 		await this.newWorkflowButton.click();
-		// Wait for dialog title to appear (HeadlessUI transitions)
+		// Wait for dialog to appear (Radix uses data-state="open")
 		await this.createDialog.waitFor({ state: 'visible', timeout: 15000 });
 		// Wait for input to be visible and interactable
 		await this.titleInput.waitFor({ state: 'visible', timeout: 5000 });
